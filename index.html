@@ -1,28 +1,36 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en-UG">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#3570BC">
-<title>School Management System Uganda — CBC Report Cards, Marks & Rosters | Edutrace</title>
-<meta name="description" content="Edutrace is a school management system built for Ugandan schools. Record marks, generate CBC report cards, manage rosters, and publish term results — all from one platform.">
+<title>Edutrace — School Management System Uganda</title>
+<meta name="description" content="Edutrace is a school management system for Ugandan schools. Record marks, generate CBC report cards, manage rosters and publish term results.">
+<link rel="canonical" href="https://edutraceug.com/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Edutrace">
+<meta property="og:locale" content="en_GB">
 <meta property="og:title" content="Edutrace — School Management System Uganda">
 <meta property="og:description" content="Record marks, generate CBC report cards, manage rosters, and publish term results — all from one platform.">
-<meta property="og:image" content="/open.png">
+<meta property="og:image" content="https://edutraceug.com/open.png">
+<meta property="og:image:alt" content="Edutrace school management system for Uganda">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://edutraceug.com/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Edutrace — School Management System Uganda">
 <meta name="twitter:description" content="Record marks, generate CBC report cards, manage rosters, and publish term results.">
-<meta name="twitter:image" content="/open.png">
-<link rel="icon" type="image/png" href="/logo.png">
-<link rel="apple-touch-icon" href="edutrace-favicon.jpg.png">
+<meta name="twitter:image" content="https://edutraceug.com/open.png">
+<link rel="icon" type="image/jpeg" href="/edutrace-favicon.jpg">
+<link rel="apple-touch-icon" href="/edutrace-favicon.jpg">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Edutrace","url":"https://edutraceug.com/","applicationCategory":"EducationalApplication","operatingSystem":"Web","description":"School management system for Ugandan schools: marks, CBC report cards, rosters and parent access.","areaServed":"UG"}
+</script>
 <style>
 :root{--blue:#3570BC;--green:#008E34;--yellow:#F9B515;--red:#D7040A;--dark:#1A1A1A;--muted:#555;--border:#E5E5E5;--light:#F8F9FA;--font:'Plus Jakarta Sans',Arial,sans-serif;--hh:64px}
 *{margin:0;padding:0;box-sizing:border-box;border-radius:0!important}
@@ -40,7 +48,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .cookie{position:fixed;left:0;right:0;bottom:0;background:var(--dark);color:#fff;z-index:9999;display:none;border-top:3px solid var(--blue)}
 .cookie.show{display:block}
 .cookie-in{width:92%;max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 0}
-.cookie-text{flex:1;font-size:.78rem;line-height:1.4}
+.cookie-text{flex:1;font-size:.78rem;line-height:1.4;display:flex;align-items:center;gap:10px}
+.cookie-img{width:100px;height:auto;object-fit:contain;flex:none}
 .cookie-text a{color:var(--yellow);text-decoration:underline;font-weight:600}
 .cookie-btn{padding:8px 14px;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px}
 .cookie-btn.allow{background:var(--green);color:#fff}
@@ -89,6 +98,9 @@ header{background:#fff;position:sticky;top:0;z-index:1000;border-bottom:1px soli
 .hero p{font-size:1.1rem;max-width:520px;margin-bottom:28px;opacity:.92}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 28px;font-weight:700;font-size:.88rem;text-transform:uppercase;letter-spacing:.5px;background:var(--green);color:#fff;border:2px solid var(--green);transition:background .2s}
 .btn:hover{background:#fff;color:var(--green)}
+.hero-actions{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.btn.ghost{background:transparent;color:#fff;border:3px solid;border-image:linear-gradient(90deg,var(--blue),var(--green),var(--yellow),var(--red)) 1}
+.btn.ghost:hover{background:rgba(255,255,255,.15);color:#fff}
 
 /* hero illustration (colorful framed image) */
 .hero-image-wrap {
@@ -223,6 +235,7 @@ footer{background:#111;color:#bbb;padding-top:56px;border-top:5px solid var(--bl
   .nav-cta{padding:10px 12px;font-size:.7rem}
   .icon-btn{width:38px}
   .hero .btn{width:100%}
+  .hero-actions{align-items:stretch}
   .tabs{width:100%}.tab{flex:1;padding:13px 8px}
   .roles{grid-template-columns:1fr}
   .cookie-in{flex-wrap:wrap}
@@ -238,7 +251,7 @@ footer{background:#111;color:#bbb;padding-top:56px;border-top:5px solid var(--bl
 
 <div class="cookie" id="cookie" role="dialog" aria-label="Cookie consent">
   <div class="cookie-in">
-    <div class="cookie-text">We use cookies to improve your experience and analyse traffic. <a href="terms-policy.html">Terms &amp; Policies</a></div>
+    <div class="cookie-text"><img class="cookie-img" src="cookied.png" alt="" width="38" height="38"><span>We use cookies to improve your experience and analyse traffic. <a href="terms-policy.html">Terms &amp; Policies</a></span></div>
     <button class="cookie-btn reject" id="cookieReject" type="button">Reject</button>
     <button class="cookie-btn allow" id="cookieAllow" type="button">Allow</button>
   </div>
@@ -278,7 +291,10 @@ footer{background:#111;color:#bbb;padding-top:56px;border-top:5px solid var(--bl
     <div class="container">
       <h1>Marks, report cards and results for Ugandan schools.</h1>
       <p>Built for CBC and percentage grading. Parents see results on their phones.</p>
-      <a href="register.html" class="btn">Register your school</a>
+      <div class="hero-actions">
+        <button type="button" class="btn" id="heroSearch">Search your school</button>
+        <a href="register.html" class="btn ghost">Register your school</a>
+      </div>
     </div>
   </section>
 
@@ -510,6 +526,13 @@ document.getElementById('year').textContent=new Date().getFullYear();
   document.getElementById('cookieAllow').addEventListener('click',function(){set('allow')});
   document.getElementById('cookieReject').addEventListener('click',function(){set('reject')});
 })();
+
+/* hero search button opens the header search */
+document.getElementById('heroSearch').addEventListener('click',function(e){
+  e.stopPropagation();
+  if(document.getElementById('searchPanel').classList.contains('open')){document.getElementById('schoolInput').focus()}
+  else{document.getElementById('searchBtn').click()}
+});
 </script>
 </body>
 </html>
