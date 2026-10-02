@@ -51,13 +51,13 @@ input,select,textarea{font-family:inherit;font-size:1rem;color:inherit}
 .signin-form .field input{width:100%;padding:13px 14px;border:2px solid var(--border);font-size:.95rem;font-weight:500;transition:border-color .15s}
 .signin-form .field input:focus{outline:none;border-color:var(--primary)}
 .signin-form .field.pw-field{position:relative}
-.signin-form .field.pw-field .toggle{position:absolute;right:10px;bottom:10px;padding:5px 8px;color:var(--muted);font-size:.85rem;border:1px solid var(--border);background:#fff}
+.signin-form .field.pw-field .toggle{position:absolute;right:10px;bottom:8px;padding:5px 8px;color:var(--muted);font-size:.85rem;border:1px solid var(--border);background:#fff}
 .signin-form .field.pw-field .toggle:hover{color:var(--primary);border-color:var(--primary)}
-.signin-form button{width:100%;padding:14px 20px;background:var(--primary);color:#fff;font-weight:700;font-size:.9rem;text-transform:uppercase;letter-spacing:.5px;border:2px solid var(--primary);transition:all .15s;margin-top:6px}
-.signin-form button:hover:not(:disabled){background:var(--primary-dark);border-color:var(--primary-dark)}
-.signin-form button:disabled{opacity:.6;cursor:not-allowed}
+.signin-form button[type="submit"]{width:100%;padding:14px 20px;background:var(--primary);color:#fff;font-weight:700;font-size:.9rem;text-transform:uppercase;letter-spacing:.5px;border:2px solid var(--primary);transition:all .15s;margin-top:6px}
+.signin-form button[type="submit"]:hover:not(:disabled){background:var(--primary-dark);border-color:var(--primary-dark)}
+.signin-form button[type="submit"]:disabled{opacity:.6;cursor:not-allowed}
 .signin-form .spinner{display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:8px}
-.signin-form button.loading .spinner{display:inline-block}
+.signin-form button[type="submit"].loading .spinner{display:inline-block}
 
 .signin-err{background:#fef2f2;color:var(--red);border-left:4px solid var(--red);padding:12px 16px;font-size:.85rem;font-weight:600;margin-bottom:18px;display:none;text-align:left;line-height:1.5}
 .signin-err.show{display:block}
@@ -256,31 +256,26 @@ table.tbl .meta{font-size:.75rem;color:var(--muted)}
 }
 
 @media(max-width:640px){
-  /* Header simplification */
   .h-user .uname,.h-user .role-badge{display:none}
   .h-brand .h-name{font-size:.9rem}
   .h-brand img{height:32px}
   .header-inner{padding:0 14px;gap:10px}
 
-  /* Page head stacks */
   .page-head{margin-bottom:16px;align-items:flex-start}
   .page-head h1{font-size:1.2rem}
   .page-head p{font-size:.82rem}
   .head-actions{width:100%}
   .head-actions .btn,.head-actions a.btn{flex:1;min-width:0}
 
-  /* Cards */
   .card-body{padding:16px}
   .card-head{padding:12px 14px}
   .card-head h2{font-size:.9rem}
 
-  /* Stats single column */
   .stats{grid-template-columns:1fr;gap:10px;margin-bottom:16px}
   .stat{padding:14px}
   .stat .value{font-size:1.5rem}
   .stat .value.sm{font-size:1rem}
 
-  /* Tables → stacked cards */
   table.tbl{font-size:.85rem;display:block}
   table.tbl thead{display:none}
   table.tbl tbody{display:block}
@@ -296,10 +291,8 @@ table.tbl .meta{font-size:.75rem;color:var(--muted)}
   table.tbl td.actions a.btn{width:100%}
   table.tbl .name{text-align:right}
 
-  /* Tabs smaller */
   .tab{padding:10px 12px;font-size:.72rem}
 
-  /* Modals full width */
   .modal-back{padding:10px}
   .modal{margin:10px auto;max-width:100%}
   .modal-head{padding:14px 16px}
@@ -308,22 +301,18 @@ table.tbl .meta{font-size:.75rem;color:var(--muted)}
   .modal-foot{padding:12px 16px;flex-direction:column-reverse}
   .modal-foot .btn{width:100%}
 
-  /* Detail rows stack fully */
   .detail-row{grid-template-columns:1fr;gap:2px;padding:8px 0}
   .detail-row .key{font-size:.66rem}
   .detail-row .val{font-size:.88rem}
 
-  /* Photo thumbnails smaller grid */
   .photo-thumbs{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
 
-  /* Login card */
   .signin-wrap{padding:14px}
   .signin-card{padding:28px 20px}
   .signin-card .brand-logo{height:48px}
   .signin-card h1{font-size:1.2rem}
   .signin-card p.lead{font-size:.85rem;margin-bottom:20px}
 
-  /* Toasts */
   .toast-wrap{left:12px;right:12px;top:72px;max-width:none}
   .toast{min-width:0;max-width:none;width:100%}
 }
@@ -358,7 +347,9 @@ table.tbl .meta{font-size:.75rem;color:var(--muted)}
       <div class="field pw-field">
         <label for="loginPassword">Password</label>
         <input type="password" id="loginPassword" autocomplete="current-password" required>
-        
+        <button type="button" class="toggle" id="pwToggle" aria-label="Show password">
+          <i class="fa-solid fa-eye"></i>
+        </button>
       </div>
       <button type="submit" id="loginBtn">
         <span class="spinner"></span>
@@ -693,64 +684,73 @@ function showApp() {
   $("layout").classList.add("show");
 }
 
-$("pwToggle").addEventListener("click", () => {
-  const pw = $("loginPassword");
-  const icon = $("pwToggle").querySelector("i");
-  if (pw.type === "password") {
-    pw.type = "text";
-    icon.className = "fa-solid fa-eye-slash";
-  } else {
-    pw.type = "password";
-    icon.className = "fa-solid fa-eye";
-  }
-});
+(function bindPasswordToggle() {
+  const btn = $("pwToggle");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const pw = $("loginPassword");
+    const icon = btn.querySelector("i");
+    if (!pw || !icon) return;
+    if (pw.type === "password") {
+      pw.type = "text";
+      icon.className = "fa-solid fa-eye-slash";
+    } else {
+      pw.type = "password";
+      icon.className = "fa-solid fa-eye";
+    }
+  });
+})();
 
-$("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = $("loginEmail").value.trim();
-  const password = $("loginPassword").value;
-  const err = $("signinErr");
-  err.classList.remove("show");
+(function bindLoginForm() {
+  const form = $("loginForm");
+  if (!form) return;
 
-  if (!email || !password) {
-    err.textContent = "Enter both email and password.";
-    err.classList.add("show");
-    return;
-  }
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = $("loginEmail").value.trim();
+    const password = $("loginPassword").value;
+    const err = $("signinErr");
+    err.classList.remove("show");
 
-  const btn = $("loginBtn");
-  setBtn(btn, true);
-
-  try {
-    const res = await fetch(`${WORKER}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      err.textContent = data.error || "Sign-in failed";
+    if (!email || !password) {
+      err.textContent = "Enter both email and password.";
       err.classList.add("show");
-      setBtn(btn, false);
       return;
     }
 
-    setToken(data.token);
-    S.email = data.email || email;
-    $("loginPassword").value = "";
-    await bootApp();
-  } catch (err2) {
-    err.textContent = "Couldn't reach the server. Try again.";
-    err.classList.add("show");
-    setBtn(btn, false);
-  }
-});
+    const btn = $("loginBtn");
+    setBtn(btn, true);
+
+    try {
+      const res = await fetch(`${WORKER}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        err.textContent = data.error || "Sign-in failed";
+        err.classList.add("show");
+        setBtn(btn, false);
+        return;
+      }
+
+      setToken(data.token);
+      S.email = data.email || email;
+      $("loginPassword").value = "";
+      await bootApp();
+    } catch (err2) {
+      err.textContent = "Couldn't reach the server. Try again.";
+      err.classList.add("show");
+      setBtn(btn, false);
+    }
+  });
+})();
 
 /* ================================================================== *
  * BOOT
  * ================================================================== */
 async function bootApp() {
-  // Confirm token still works
   let me;
   try {
     me = await api(`${WORKER}/me`);
@@ -775,11 +775,15 @@ function paintHeader() {
   $("userAvatar").textContent = name.slice(0, 2).toUpperCase();
 }
 
-$("logoutBtn").addEventListener("click", () => {
-  clearToken();
-  location.hash = "";
-  location.reload();
-});
+(function bindLogout() {
+  const btn = $("logoutBtn");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    clearToken();
+    location.hash = "";
+    location.reload();
+  });
+})();
 
 /* ================================================================== *
  * SHELL
@@ -790,33 +794,52 @@ function bindShell() {
 
   qa(".snav-item").forEach((n) => n.addEventListener("click", () => showView(n.dataset.view)));
 
-  $("menuBtn").addEventListener("click", () => {
-    $("sidebar").classList.toggle("open");
-    $("sidebarBack").classList.toggle("show");
-  });
-  $("sidebarBack").addEventListener("click", () => {
-    $("sidebar").classList.remove("open");
-    $("sidebarBack").classList.remove("show");
-  });
+  const menuBtn = $("menuBtn");
+  if (menuBtn) {
+    menuBtn.addEventListener("click", () => {
+      $("sidebar").classList.toggle("open");
+      $("sidebarBack").classList.toggle("show");
+    });
+  }
+  const sbBack = $("sidebarBack");
+  if (sbBack) {
+    sbBack.addEventListener("click", () => {
+      $("sidebar").classList.remove("open");
+      $("sidebarBack").classList.remove("show");
+    });
+  }
 
-  $("modalClose").addEventListener("click", closeModal);
-  $("modalBack").addEventListener("click", (e) => {
-    if (e.target === $("modalBack")) closeModal();
-  });
+  const modalClose = $("modalClose");
+  if (modalClose) modalClose.addEventListener("click", closeModal);
+
+  const modalBack = $("modalBack");
+  if (modalBack) {
+    modalBack.addEventListener("click", (e) => {
+      if (e.target === $("modalBack")) closeModal();
+    });
+  }
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeModal();
-      $("confirmBack").classList.remove("show");
+      const cb = $("confirmBack");
+      if (cb) cb.classList.remove("show");
     }
   });
 
-  $("dashRefresh").addEventListener("click", async () => {
-    await Promise.all([loadStats(), loadRecent()]);
-    toast("Refreshed", "success", 2000);
-  });
-  $("reqRefresh").addEventListener("click", () => loadRequests(S.currentTab));
-  $("schoolsRefresh").addEventListener("click", loadSchools);
-  $("adminsRefresh").addEventListener("click", loadAdmins);
+  const dashRefresh = $("dashRefresh");
+  if (dashRefresh) {
+    dashRefresh.addEventListener("click", async () => {
+      await Promise.all([loadStats(), loadRecent()]);
+      toast("Refreshed", "success", 2000);
+    });
+  }
+  const reqRefresh = $("reqRefresh");
+  if (reqRefresh) reqRefresh.addEventListener("click", () => loadRequests(S.currentTab));
+  const schoolsRefresh = $("schoolsRefresh");
+  if (schoolsRefresh) schoolsRefresh.addEventListener("click", loadSchools);
+  const adminsRefresh = $("adminsRefresh");
+  if (adminsRefresh) adminsRefresh.addEventListener("click", loadAdmins);
 
   qa("#reqTabs .tab").forEach((tab) => tab.addEventListener("click", () => {
     qa("#reqTabs .tab").forEach((t) => t.classList.toggle("active", t === tab));
@@ -1551,4 +1574,4 @@ window.addEventListener("hashchange", () => {
 </script>
 
 </body>
-          </html>
+  </html>
