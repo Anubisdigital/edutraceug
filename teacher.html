@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en-UG">
 <head>
 <meta charset="UTF-8">
@@ -816,6 +816,7 @@ async function safeError(res) {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     location.replace("/account.html");
@@ -833,15 +834,18 @@ onAuthStateChanged(auth, async (user) => {
   }
   state.claims = claims;
 
+  // Role guard: only teachers belong on this page.
   if (claims.role !== "teacher") {
-    const target = ROLE_ROUTES[claims.role];
-    if (target) location.replace(target);
-    else {
+    const route = ROLE_ROUTES[claims.role];
+    if (route) {
+      location.replace(route);
+    } else {
       await signOut(auth);
       location.replace("/account.html");
     }
     return;
   }
+
   state.schoolId = claims.schoolId;
 
   try {
@@ -856,7 +860,6 @@ onAuthStateChanged(auth, async (user) => {
     hideBootSkeleton();
   }
 });
-
 async function loadAll() {
   const sid = state.schoolId;
   const [school, termsData, configData, teacher] = await Promise.all([
@@ -2027,4 +2030,4 @@ function renderProfile() {
 </script>
 
 </body>
-        </html>
+ </html>
