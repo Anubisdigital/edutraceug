@@ -29,7 +29,7 @@
   --shadow:0 1px 3px rgba(0,0,0,.06);
   --shadow-lg:0 8px 24px rgba(0,0,0,.1);
 }
-*{margin:0;padding:0;box-sizing:border-box;border-radius:0!important}
+*{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:var(--font);color:var(--dark);line-height:1.5;background:var(--bg);-webkit-font-smoothing:antialiased;min-height:100vh}
 img{max-width:100%;height:auto;display:block}
@@ -602,7 +602,6 @@ function paintHeader() {
   $("userName").textContent = email.split("@")[0] || "Parent";
   $("userAvatar").textContent = (email[0] || "P").toUpperCase();
 
-  // relationship badge in the child banner
   const rel = state.claims.relationship || "guardian";
   $("relationBadge").textContent = RELATIONSHIP_LABELS[rel] || "Guardian";
 }
@@ -679,7 +678,6 @@ async function loadReport() {
 
     if (err.status === 403) {
       const msg = err.message || "";
-      // Consent missing vs. report withheld — two very different 403s
       if (/consent/i.test(msg)) {
         showConsent();
       } else {
@@ -792,7 +790,6 @@ function renderReport() {
   renderSubjects(r, isCbc);
 }
 
-
 function renderSubjects(report, isCbc) {
   const grid = $("subjectsGrid");
   const subjects = report.subjects || [];
@@ -816,32 +813,9 @@ function renderSubjects(report, isCbc) {
     }
     return `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)"><span style="font-weight:700">${escapeHtml(sub.name || "Subject")}</span><span style="text-align:right">${right}</span></div>`;
   }).join("");
+
   grid.style.display = "block";
   grid.innerHTML = `<div class="card" style="margin-bottom:0">${rows}</div>`;
-}
-    let footLeft, footRight;
-    if (isCbc) {
-      footLeft = `<span class="lbl">Level</span>`;
-      footRight = sub.level
-        ? `<span class="grade-pill grade-${escapeHtml(String(sub.level.level))}">${escapeHtml(sub.level.label)}</span>`
-        : `<span class="grade-pill grade-1">—</span>`;
-    } else {
-      footLeft = `<span class="lbl">Total</span>`;
-      const pct = sub.pct != null ? `${sub.pct.toFixed(1)}%` : "—";
-      const grade = sub.grade ? `<span class="grade-pill grade-${escapeHtml(sub.grade.grade)}">${escapeHtml(sub.grade.grade)}</span>` : "";
-      footRight = `<div style="display:flex;align-items:center;gap:10px"><span class="tot">${pct}</span>${grade}</div>`;
-    }
-
-    return `
-      <div class="subj">
-        <div class="subj-head">
-          <h3>${escapeHtml(sub.name || "Subject")}</h3>
-        </div>
-        <div class="subj-body">${assessments || `<div style="padding:12px 0;color:var(--muted);font-size:.85rem">No assessments recorded.</div>`}</div>
-        <div class="subj-foot">${footLeft}${footRight}</div>
-      </div>
-    `;
-  }).join("");
 }
 
 /* ------------------------------------------------------------------ *
