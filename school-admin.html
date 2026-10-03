@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en-UG">
 <head>
 <meta charset="UTF-8">
@@ -1289,17 +1289,23 @@ async function loadInitial() {
   const cur = S.terms.find((t) => t.isCurrent);
   S.currentTermId = cur ? cur.id : (S.terms[0] && S.terms[0].id) || null;
 
-  // Merge streams into CLASSES constant
-  const routeMap = {};
-  (S.structure.classes || []).forEach((c) => {
-    const canon = normaliseClass(c.class);
-    if (canon) routeMap[canon] = (routeMap[canon] || []).concat(c.streams || []);
-  });
-  S.structure.classes = CLASSES.map((c) => ({
-    class: c,
-    streams: [...new Set(routeMap[c] || [])],
-    subjects: [] // subjects are now from constants, not from roster
-  }));
+  
+  
+// Merge streams (and student counts) into CLASSES constant
+const routeMap = {};
+const countMap = {};
+(S.structure.classes || []).forEach((c) => {
+  const canon = normaliseClass(c.class);
+  if (!canon) return;
+  routeMap[canon] = (routeMap[canon] || []).concat(c.streams || []);
+  if (typeof c.students === "number") countMap[canon] = (countMap[canon] || 0) + c.students;
+});
+S.structure.classes = CLASSES.map((c) => ({
+  class: c,
+  streams: [...new Set(routeMap[c] || [])],
+  students: countMap[c] || 0,
+  subjects: [] // subjects are now from constants, not from roster
+}));
 }
 
 function paintHeader() {
@@ -1818,48 +1824,70 @@ function renderAssignListForClass() {
   });
 }
 
+
 async function saveAssignments() {
   const cls = $("wzAssignClass").value;
   if (!cls) { toast("Pick a class first", "warn"); return; }
   const btn = $("wzAssignSave"); setBtn(btn, true);
   try {
     const assignMap = WZ.assign[cls] || {};
-    // Group by teacher
+
+    // Streams for this class. Empty array = single-stream school.
+    const streams = ((S.structure.classes || []).find((c) => c.class === cls) || {}).streams || [];
+    const streamList = streams.length ? streams : [""];
+
+    // Group by teacher: for each selected subject, expand across streams.
     const byTeacher = {};
     Object.entries(assignMap).forEach(([subject, uid]) => {
       if (!uid) return;
       if (!byTeacher[uid]) byTeacher[uid] = [];
-      byTeacher[uid].push({ class: cls, stream: "", subject });
+      for (const st of streamList) {
+        byTeacher[uid].push({ class: cls, stream: st, subject });
+      }
     });
-    // For each teacher, we need to merge with their existing assignments
+
     for (const t of S.teachers) {
+      // Remove any existing rows for this class, keep the rest
       const existing = (t.assignments || []).filter((a) => normaliseClass(a.class) !== cls);
       const newOnes = byTeacher[t.uid] || [];
       const merged = [...existing, ...newOnes];
-      if (JSON.stringify(merged) === JSON.stringify(t.assignments || [])) continue;
+
+      // Stable compare: sort by class|stream|subject before stringify
+      const key = (a) => `${a.class}|${a.stream || ""}|${a.subject}`;
+      const a = merged.slice().sort((x, y) => key(x).localeCompare(key(y)));
+      const b = (t.assignments || []).slice().sort((x, y) => key(x).localeCompare(key(y)));
+      if (JSON.stringify(a) === JSON.stringify(b)) continue;
+
       await api(`${W.teachers}/schools/${encodeURIComponent(S.schoolId)}/teachers/${encodeURIComponent(t.uid)}/assignments`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ assignments: merged })
       });
     }
-    // Also handle teachers not in S.teachers (none expected)
+
     toast("Assignments saved", "success");
     await loadInitial();
     renderAssignListForClass();
   } catch (err) { toast(err.message, "error", 6000); }
   finally { setBtn(btn, false); }
 }
-
 function computeWizardStatus() {
   const school = S.school || {};
   const hasName = !!(school.name && school.name.trim());
-  const hasStudents = (S.structure.classes || []).some((c) => c.streams && c.streams.length) || false;
+
+// Prefer an explicit student count if the teachers worker returned it.
+// Fall back to inferring from streams for older deployments.
+let hasStudents = false;
+if (S.structure && Array.isArray(S.structure.classes)) {
+  const total = S.structure.classes.reduce((n, c) => n + (typeof c.students === "number" ? c.students : 0), 0);
+  if (total > 0) hasStudents = true;
+  else hasStudents = S.structure.classes.some((c) => c.streams && c.streams.length);
+}
   // Better: check if any students exist — use structure class subject-less trick? We have no student count directly.
   // We'll infer from structure having any stream. If no streams, maybe no students. We could also check via teachers worker.
   // Let's use the presence of any class with streams OR the school having been loaded with classes.
   // For robustness, we'll consider step2 done if any class in structure has at least one stream.
-  const hasTeachers = (S.teachers || []).length > 0;
+ const hasTeachers = (S.teachers || []).length > 0;
   const hasTerm = (S.terms || []).some((t) => t.isCurrent) || (S.terms || []).length > 0;
   const hasAssignments = (S.teachers || []).some((t) => (t.assignments || []).length > 0);
   const hasPage = !!((school.heroImages && school.heroImages.length) || (school.headTeacher && school.headTeacher.trim()));
@@ -1943,7 +1971,8 @@ async function saveWzStep1() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
   });
-  S.school = updated;
+  // If the profile worker echoes back only a subset, keep what we already have.
+  S.school = { ...(S.school || {}), ...(updated || {}), name, motto: body.motto, vision: body.vision };
   paintHeader();
 }
 
