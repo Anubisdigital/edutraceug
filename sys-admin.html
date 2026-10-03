@@ -970,7 +970,7 @@ async function loadRecent() {
               <tr>
                 <td data-label="School">
                   <div class="name">${esc(r.schoolName)}</div>
-                  <div class="meta">${esc(r.location)} · ${r.studentCount} students</div>
+                  <div class="meta">${esc(r.location)} ·${r.studentCount} students</div>
                 </td>
                 <td data-label="Registrar">${esc(r.registrarName)}</td>
                 <td data-label="Status">${statusPill(r.status)}</td>
@@ -1039,7 +1039,7 @@ async function loadRequests(status) {
               <tr>
                 <td data-label="School">
                   <div class="name">${esc(r.schoolName)}</div>
-                  <div class="meta">${esc(r.location)} · ${r.studentCount} students</div>
+                  <div class="meta">${esc(r.location)} ·${r.studentCount} students</div>
                 </td>
                 <td data-label="Registrar">
                   <div>${esc(r.registrarName)}</div>
@@ -1171,12 +1171,12 @@ async function openRequestDetail(id) {
       ${req.approvedAt ? `
         <div class="detail-row">
           <div class="key">Approved</div>
-          <div class="val">${fmtDateTime(req.approvedAt)} by ${esc(req.approvedBy || "")}</div>
+          <div class="val">${fmtDateTime(req.approvedAt)} by${esc(req.approvedBy || "")}</div>
         </div>` : ""}
       ${req.rejectedAt ? `
         <div class="detail-row">
           <div class="key">Rejected</div>
-          <div class="val">${fmtDateTime(req.rejectedAt)} by ${esc(req.rejectedBy || "")}${req.rejectionReason ? " — " + esc(req.rejectionReason) : ""}</div>
+          <div class="val">${fmtDateTime(req.rejectedAt)} by ${esc(req.rejectedBy \vert{}\vert{} "")}${req.rejectionReason ? " — " + esc(req.rejectionReason) : ""}</div>
         </div>` : ""}
     </div>
   `;
@@ -1436,7 +1436,7 @@ async function loadSchools() {
               <th>Location</th>
               <th>Contact</th>
               <th>Theme</th>
-              <th></th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -1503,8 +1503,8 @@ async function loadAdmins() {
       $("adminsList").innerHTML = `
         <div class="empty">
           <i class="fa-solid fa-user-shield"></i>
-          <h3>No admins yet</h3>
-          <p>Approve a school request to create one.</p>
+          <h3>No admin accounts found</h3>
+          <p>School admin accounts created during approval will appear here.</p>
         </div>`;
       return;
     }
@@ -1514,26 +1514,20 @@ async function loadAdmins() {
         <table class="tbl">
           <thead>
             <tr>
-              <th>Email</th>
-              <th>Name</th>
-              <th>School</th>
-              <th>Subdomain</th>
+              <th>Admin Email</th>
+              <th>School ID</th>
+              <th>Role</th>
               <th>Created</th>
             </tr>
           </thead>
           <tbody>
             ${list.map((a) => `
               <tr>
-                <td data-label="Email"><div class="name">${esc(a.email)}</div></td>
-                <td data-label="Name">${esc(a.name || "—")}</td>
-                <td data-label="School">${esc(a.schoolName || "—")}</td>
-                <td data-label="Subdomain">
-                  ${a.schoolSlug
-                    ? `<a href="https://${esc(a.schoolSlug)}.edutraceug.com" target="_blank" rel="noopener" style="color:var(--primary);font-weight:700">
-                        ${esc(a.schoolSlug)}.edutraceug.com
-                       </a>`
-                    : `<span class="pill grey">—</span>`}
+                <td data-label="Admin Email">
+                  <div class="name">${esc(a.email)}</div>
                 </td>
+                <td data-label="School ID" class="meta" style="font-family:monospace">${esc(a.schoolId || "—")}</td>
+                <td data-label="Role"><span class="pill blue">${esc(a.role || "Admin")}</span></td>
                 <td data-label="Created" class="meta">${fmtDate(a.createdAt)}</td>
               </tr>
             `).join("")}
@@ -1550,28 +1544,8 @@ async function loadAdmins() {
   }
 }
 
-/* ================================================================== *
- * HASH CHANGE ROUTER
- * ================================================================== */
-window.addEventListener("hashchange", () => {
-  if (!getToken()) return;
-  const name = (location.hash || "").replace(/^#\/?/, "") || "dashboard";
-  if (["dashboard", "requests", "schools", "admins"].includes(name)) {
-    showView(name);
-  }
-});
-
-/* ================================================================== *
- * INIT
- * ================================================================== */
-(async function init() {
-  if (getToken()) {
-    await bootApp();
-  } else {
-    showLogin();
-  }
-})();
+/* Auto-start */
+bootApp();
 </script>
-
 </body>
-  </html>
+</html>
