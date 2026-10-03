@@ -224,6 +224,58 @@ table.tbl td.actions{text-align:right;white-space:nowrap}
 .block-preview p{font-size:.85rem;color:var(--muted)}
 .block-edit-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 
+/* ===== Wizard ===== */
+.wizard-overlay{position:fixed;inset:0;background:var(--bg);z-index:9000;display:none;flex-direction:column}
+.wizard-overlay.show{display:flex}
+.wizard-head{background:#fff;border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;gap:14px;position:relative}
+.wizard-head::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary) 25%,var(--green) 25% 50%,var(--yellow) 50% 75%,var(--red) 75%)}
+.wizard-head .wz-title{font-weight:800;font-size:1rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wizard-head .wz-step{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);white-space:nowrap}
+.wizard-head .wz-close{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--border);font-size:1rem;color:var(--muted)}
+.wizard-head .wz-close:hover{color:var(--red);border-color:var(--red)}
+.wizard-progress{height:4px;background:var(--border);position:relative}
+.wizard-progress .bar{height:100%;background:var(--primary);width:12.5%;transition:width .3s}
+.wizard-body{flex:1;overflow-y:auto;padding:20px;max-width:780px;margin:0 auto;width:100%}
+.wizard-foot{background:#fff;border-top:1px solid var(--border);padding:12px 18px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;justify-content:space-between;align-items:center}
+.wizard-foot .btn{min-height:48px;padding:12px 20px}
+.wizard-step{display:none}
+.wizard-step.active{display:block}
+.wizard-step h2{font-size:1.3rem;font-weight:800;margin-bottom:6px;letter-spacing:-.3px}
+.wizard-step p.lead{color:var(--muted);font-size:.9rem;margin-bottom:18px}
+.wizard-skip{font-size:.82rem;font-weight:700;color:var(--primary);text-decoration:underline;cursor:pointer;background:none;border:none;padding:0}
+.wizard-skip:hover{color:var(--primary-dark)}
+.wz-subject-group{border:1px solid var(--border);background:#fff;padding:14px;margin-bottom:14px}
+.wz-subject-group h3{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px}
+.wz-subject-group .locked-note{font-size:.78rem;color:var(--muted);font-style:italic;margin-bottom:8px}
+.wz-check-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+.wz-class-block{border:1px solid var(--border);background:#fff;margin-bottom:14px}
+.wz-class-block .wz-class-head{padding:10px 14px;background:var(--light);border-bottom:1px solid var(--border);font-weight:800;font-size:.9rem;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.wz-class-block .wz-class-body{padding:12px 14px}
+.wz-assign-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.wz-assign-row:last-child{border-bottom:none}
+.wz-assign-row label{font-weight:600;font-size:.86rem}
+.wz-assign-row select{width:100%;padding:10px 12px;border:2px solid var(--border);font-size:.86rem;background:#fff}
+.wz-summary-list{list-style:none;margin-top:10px}
+.wz-summary-list li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:.9rem}
+.wz-summary-list li:last-child{border-bottom:none}
+.wz-summary-list li i{margin-top:3px;flex-shrink:0}
+.wz-summary-list li.done i{color:var(--green)}
+.wz-summary-list li.missed i{color:var(--yellow)}
+.wz-summary-list li .wz-label{flex:1}
+.wz-summary-list li .wz-state{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);white-space:nowrap}
+.wz-optional-note{background:var(--primary-light);border-left:4px solid var(--primary);padding:12px 14px;font-size:.85rem;margin-top:16px}
+.wz-banner{background:var(--primary-light);border:1px solid var(--primary);border-left:5px solid var(--primary);padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.wz-banner .wz-banner-text{flex:1;min-width:200px;font-size:.9rem;font-weight:600}
+.wz-banner .wz-banner-text b{color:var(--primary)}
+.wz-leaders-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center}
+.wz-leaders-row input{padding:10px 12px;border:2px solid var(--border);font-size:.86rem}
+.wz-leaders-row button{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--border);color:var(--muted)}
+.wz-leaders-row button:hover{color:var(--red);border-color:var(--red)}
+.wz-img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+.wz-img-card{border:1px solid var(--border);background:#fff;overflow:hidden}
+.wz-img-card img{width:100%;height:100px;object-fit:cover}
+.wz-img-card .wz-img-actions{padding:6px;text-align:right;background:var(--light);border-top:1px solid var(--border)}
+
 @media(max-width:900px){
   :root{--sidebar-w:0px}
   .sidebar{transform:translateX(-100%);transition:transform .25s;width:260px}
@@ -242,6 +294,14 @@ table.tbl td.actions{text-align:right;white-space:nowrap}
   .stats{grid-template-columns:1fr 1fr}
   .modal-foot{flex-direction:column-reverse}
   .modal-foot .btn{width:100%}
+  .wz-check-grid{grid-template-columns:1fr}
+  .wz-assign-row{grid-template-columns:1fr}
+  .wizard-body{padding:16px}
+  .wizard-foot{padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
+  .wizard-foot .btn{flex:1;min-height:48px;padding:12px 14px;font-size:.78rem}
+  .wizard-head{padding:12px 14px}
+  .wizard-head .wz-step{font-size:.66rem}
+  .wz-leaders-row{grid-template-columns:1fr 1fr auto}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -322,6 +382,7 @@ table.tbl td.actions{text-align:right;white-space:nowrap}
       <button class="btn btn-outline btn-sm" id="dashRefresh" type="button"><i class="fa-solid fa-rotate"></i> Refresh</button>
     </div>
   </div>
+  <div id="wzDashBanner"></div>
   <div class="stats" id="dashStats"></div>
   <div class="card">
     <div class="card-head"><h2><i class="fa-solid fa-bolt"></i> Quick actions</h2></div>
@@ -473,7 +534,7 @@ table.tbl td.actions{text-align:right;white-space:nowrap}
         </div>
         <div class="field">
           <label for="rsClass">Class <span class="hint">students only</span></label>
-          <input type="text" id="rsClass" placeholder="e.g. S.2" maxlength="60">
+          <select id="rsClass"></select>
         </div>
         <div class="field">
           <label for="rsStream">Stream <span class="hint">optional</span></label>
@@ -743,6 +804,205 @@ table.tbl td.actions{text-align:right;white-space:nowrap}
 </main>
 </div>
 
+<!-- ===== Setup Wizard Overlay ===== -->
+<div class="wizard-overlay" id="wizardOverlay" role="dialog" aria-modal="true" aria-label="Setup wizard">
+  <div class="wizard-head">
+    <button class="wz-close" id="wizardClose" type="button" aria-label="Close wizard"><i class="fa-solid fa-xmark"></i></button>
+    <span class="wz-title" id="wizardTitle">School Setup</span>
+    <span class="wz-step" id="wizardStepLabel">Step 1 of 8</span>
+  </div>
+  <div class="wizard-progress"><div class="bar" id="wizardBar"></div></div>
+  <div class="wizard-body" id="wizardBody">
+
+    <!-- Step 1: Identity -->
+    <div class="wizard-step" data-wz-step="1">
+      <h2>School identity</h2>
+      <p class="lead">Logo, name, motto and vision. Only the school name is required.</p>
+      <div class="field">
+        <label>School logo <span class="hint">optional</span></label>
+        <img id="wzLogoPreview" class="logo-preview" src="/logo.png" alt="Logo preview">
+        <div class="dropzone" id="wzLogoDrop" style="max-width:400px">
+          <i class="fa-solid fa-cloud-arrow-up big"></i>
+          <h3>Upload logo</h3>
+          <p>PNG, JPG or SVG — max 5 MB</p>
+          <input type="file" id="wzLogoInput" accept="image/*">
+        </div>
+      </div>
+      <div class="field">
+        <label for="wzName">School name <span class="hint">required to finish</span></label>
+        <input type="text" id="wzName" maxlength="200" placeholder="e.g. St. Mary's Secondary School">
+      </div>
+      <div class="field">
+        <label for="wzMotto">Motto <span class="hint">optional</span></label>
+        <input type="text" id="wzMotto" maxlength="200">
+      </div>
+      <div class="field">
+        <label for="wzVision">Vision <span class="hint">optional</span></label>
+        <textarea id="wzVision" rows="3" maxlength="1000"></textarea>
+      </div>
+    </div>
+
+    <!-- Step 2: Students -->
+    <div class="wizard-step" data-wz-step="2">
+      <h2>Student roster</h2>
+      <p class="lead">Upload students from an Excel or CSV file. You can skip and do this later.</p>
+      <div class="field">
+        <label for="wzStudentClass">Class</label>
+        <select id="wzStudentClass"></select>
+      </div>
+      <div class="field">
+        <label for="wzStudentStream">Stream <span class="hint">optional</span></label>
+        <input type="text" id="wzStudentStream" maxlength="60">
+      </div>
+      <div class="dropzone" id="wzStudentDrop">
+        <i class="fa-solid fa-cloud-arrow-up big"></i>
+        <h3>Drop student roster here</h3>
+        <p>.xlsx, .xls, .xlsm, .csv — max 25 MB</p>
+        <input type="file" id="wzStudentInput" accept=".xlsx,.xls,.xlsm,.csv">
+      </div>
+      <div id="wzStudentFileInfo" style="margin-top:14px"></div>
+      <div style="margin-top:14px">
+        <button class="btn btn-green" id="wzStudentUpload" type="button" disabled>
+          <span class="spinner"></span><span class="btn-label">Upload students</span>
+        </button>
+      </div>
+      <div id="wzStudentResult" style="margin-top:14px"></div>
+      <button class="wizard-skip" id="wzStudentSkip" type="button" style="margin-top:12px">Skip this step</button>
+    </div>
+
+    <!-- Step 3: Teachers -->
+    <div class="wizard-step" data-wz-step="3">
+      <h2>Teacher roster</h2>
+      <p class="lead">Upload teachers from an Excel or CSV file. You can skip and do this later.</p>
+      <div class="dropzone" id="wzTeacherDrop">
+        <i class="fa-solid fa-cloud-arrow-up big"></i>
+        <h3>Drop teacher roster here</h3>
+        <p>.xlsx, .xls, .xlsm, .csv — max 25 MB</p>
+        <input type="file" id="wzTeacherInput" accept=".xlsx,.xls,.xlsm,.csv">
+      </div>
+      <div id="wzTeacherFileInfo" style="margin-top:14px"></div>
+      <div style="margin-top:14px">
+        <button class="btn btn-green" id="wzTeacherUpload" type="button" disabled>
+          <span class="spinner"></span><span class="btn-label">Upload teachers</span>
+        </button>
+      </div>
+      <div id="wzTeacherResult" style="margin-top:14px"></div>
+      <button class="wizard-skip" id="wzTeacherSkip" type="button" style="margin-top:12px">Skip this step</button>
+    </div>
+
+    <!-- Step 4: Subjects -->
+    <div class="wizard-step" data-wz-step="4">
+      <h2>Subjects</h2>
+      <p class="lead">Compulsory subjects are already ticked and locked. Tick electives for each band.</p>
+
+      <div class="wz-subject-group">
+        <h3>S1-S2 (Senior 1 &amp; 2)</h3>
+        <div class="locked-note"><i class="fa-solid fa-lock"></i> Compulsory: English, Mathematics, History, Geography, Physics, Biology, Chemistry</div>
+        <div class="wz-check-grid" id="wzElectivesS1S2"></div>
+      </div>
+
+      <div class="wz-subject-group">
+        <h3>S3-S4 (Senior 3 &amp; 4)</h3>
+        <div class="locked-note"><i class="fa-solid fa-lock"></i> Compulsory: English, Mathematics, History, Geography, Physics, Biology, Chemistry</div>
+        <div class="wz-check-grid" id="wzElectivesS3S4"></div>
+      </div>
+
+      <div class="wz-subject-group">
+        <h3>S5-S6 (Senior 5 &amp; 6)</h3>
+        <div class="locked-note"><i class="fa-solid fa-lock"></i> Compulsory: General Paper</div>
+        <div class="wz-check-grid" id="wzElectivesS5S6"></div>
+      </div>
+    </div>
+
+    <!-- Step 5: Term -->
+    <div class="wizard-step" data-wz-step="5">
+      <h2>Current term</h2>
+      <p class="lead">Set the current term so marks, reports and schedules know where you are.</p>
+      <div class="grid2">
+        <div class="field">
+          <label for="wzTermName">Term name</label>
+          <input type="text" id="wzTermName" maxlength="60" placeholder="e.g. Term 1">
+        </div>
+        <div class="field">
+          <label for="wzTermYear">Year</label>
+          <input type="number" id="wzTermYear" min="2000" max="2100" value="2025">
+        </div>
+        <div class="field">
+          <label for="wzTermStart">Start date</label>
+          <input type="date" id="wzTermStart">
+        </div>
+        <div class="field">
+          <label for="wzTermEnd">End date</label>
+          <input type="date" id="wzTermEnd">
+        </div>
+      </div>
+      <label class="check"><input type="checkbox" id="wzTermCurrent" checked><span>Set as current term</span></label>
+      <button class="btn btn-primary" id="wzTermSave" type="button" style="margin-top:8px">
+        <span class="spinner"></span><span class="btn-label">Save term</span>
+      </button>
+    </div>
+
+    <!-- Step 6: Assign teachers -->
+    <div class="wizard-step" data-wz-step="6">
+      <h2>Assign teachers</h2>
+      <p class="lead">Pick a class to see its subjects, then choose a teacher beside each subject.</p>
+      <div class="field">
+        <label for="wzAssignClass">Class</label>
+        <select id="wzAssignClass"></select>
+      </div>
+      <div id="wzAssignList"></div>
+      <button class="btn btn-primary" id="wzAssignSave" type="button" style="margin-top:16px">
+        <span class="spinner"></span><span class="btn-label">Save assignments</span>
+      </button>
+    </div>
+
+    <!-- Step 7: School page -->
+    <div class="wizard-step" data-wz-step="7">
+      <h2>School page</h2>
+      <p class="lead">Hero images, head teacher and school leaders. All optional.</p>
+
+      <div class="field">
+        <label>Hero images</label>
+        <div class="dropzone" id="wzHeroDrop">
+          <i class="fa-solid fa-cloud-arrow-up big"></i>
+          <h3>Add hero image</h3>
+          <p>Wide landscape photos work best — max 10 MB, up to 5 images</p>
+          <input type="file" id="wzHeroInput" accept="image/*">
+        </div>
+        <div id="wzHeroGrid" class="wz-img-grid"></div>
+      </div>
+
+      <div class="field">
+        <label for="wzHeadTeacher">Head teacher name <span class="hint">optional</span></label>
+        <input type="text" id="wzHeadTeacher" maxlength="200">
+      </div>
+
+      <div class="field">
+        <label>School leaders <span class="hint">optional</span></label>
+        <div id="wzLeadersList"></div>
+        <button class="btn btn-outline btn-sm" id="wzAddLeader" type="button" style="margin-top:8px"><i class="fa-solid fa-plus"></i> Add leader</button>
+      </div>
+
+      <button class="btn btn-primary" id="wzPageSave" type="button" style="margin-top:8px">
+        <span class="spinner"></span><span class="btn-label">Save page details</span>
+      </button>
+    </div>
+
+    <!-- Step 8: Finish -->
+    <div class="wizard-step" data-wz-step="8">
+      <h2>You're all set</h2>
+      <p class="lead">Here's a summary of what was completed and what you skipped.</p>
+      <ul class="wz-summary-list" id="wzSummaryList"></ul>
+      <div class="wz-optional-note" id="wzOptionalNote" style="display:none"></div>
+    </div>
+
+  </div>
+  <div class="wizard-foot">
+    <button class="btn btn-outline" id="wizardBack" type="button"><i class="fa-solid fa-arrow-left"></i> Back</button>
+    <button class="btn btn-primary" id="wizardNext" type="button">Next <i class="fa-solid fa-arrow-right"></i></button>
+  </div>
+</div>
+
 <div class="modal-back" id="modalBack">
   <div class="modal" id="modal">
     <div class="modal-head">
@@ -795,10 +1055,72 @@ const ROLE_ROUTES = {
   parent: "/parent.html"
 };
 
+// ===== Constants (fixed classes, subjects, combinations) =====
+const CLASSES = ["Senior 1", "Senior 2", "Senior 3", "Senior 4", "Senior 5", "Senior 6"];
+
+const CORE_S1_S4 = ["English", "Mathematics", "History", "Geography", "Physics", "Biology", "Chemistry"];
+const CORE_S5_S6 = ["General Paper"];
+const A_LEVEL_SUBJECTS = [
+  "Subsidiary ICT", "Subsidiary Mathematics", "Physics", "Chemistry", "Mathematics",
+  "Biology", "Economics", "Divinity", "Computer Science", "Literature", "Agriculture",
+  "Geography", "History"
+];
+const ELECTIVES = {
+  religious: ["CRE", "IRE"],
+  language: ["Luganda", "Kiswahili", "Literature", "French"],
+  vocational: ["ICT", "Agriculture", "Art and Design", "Performing Arts"]
+};
+
+const A_LEVEL_COMBINATIONS = [
+  { code: "PCM", name: "Physics, Chemistry, Mathematics" },
+  { code: "PCB", name: "Physics, Chemistry, Biology" },
+  { code: "BCM", name: "Biology, Chemistry, Mathematics" },
+  { code: "HEG", name: "History, Economics, Geography" },
+  { code: "MEG", name: "Mathematics, Economics, Geography" },
+  { code: "HEL", name: "History, Economics, Literature" },
+  { code: "HED", name: "History, Economics, Divinity" },
+  { code: "PEM", name: "Physics, Economics, Mathematics" },
+  { code: "EGD", name: "Economics, Geography, Divinity" },
+  { code: "ICT", name: "Computer Science, Economics, Mathematics" },
+  { code: "AGR", name: "Agriculture, Biology, Chemistry" },
+  { code: "CDF", name: "Computer Science, Divinity, Literature" }
+];
+
+// Helpers
+function normaliseClass(name) {
+  if (!name) return "";
+  const s = String(name).trim().toLowerCase()
+    .replace(/^senior\s*/, "")
+    .replace(/^s\.?\s*/, "")
+    .replace(/^s/, "");
+  const n = parseInt(s, 10);
+  if (n >= 1 && n <= 6) return "Senior " + n;
+  return "";
+}
+function classBand(name) {
+  const c = normaliseClass(name);
+  if (c === "Senior 1" || c === "Senior 2") return "S1-S2";
+  if (c === "Senior 3" || c === "Senior 4") return "S3-S4";
+  if (c === "Senior 5" || c === "Senior 6") return "S5-S6";
+  return "";
+}
+
 const S = {
   user: null, claims: null, schoolId: null, school: null,
   terms: [], structure: { classes: [] }, types: [], scoring: null,
   config: null, currentTermId: null, view: "dashboard", teachers: []
+};
+
+// Wizard state
+const WZ = {
+  step: 1,
+  totalSteps: 8,
+  opened: false,
+  step4Done: false,
+  electives: { "S1-S2": [], "S3-S4": [], "S5-S6": [] },
+  page: { heroImages: [], headTeacher: "", leaders: [] },
+  assign: {}, // class -> { subject: teacherUid }
+  term: {}
 };
 
 const $ = (id) => document.getElementById(id);
@@ -938,7 +1260,9 @@ onAuthStateChanged(auth, async (user) => {
     await loadInitial();
     paintHeader();
     bindShell();
+    initWizard();
     showView(location.hash.replace(/^#\/?/, "") || "dashboard");
+    maybeAutoOpenWizard();
   } catch (err) {
     console.error(err);
     toast(err.message || "Failed to load", "error", 8000);
@@ -964,6 +1288,18 @@ async function loadInitial() {
   S.teachers = teachers.teachers || [];
   const cur = S.terms.find((t) => t.isCurrent);
   S.currentTermId = cur ? cur.id : (S.terms[0] && S.terms[0].id) || null;
+
+  // Merge streams into CLASSES constant
+  const routeMap = {};
+  (S.structure.classes || []).forEach((c) => {
+    const canon = normaliseClass(c.class);
+    if (canon) routeMap[canon] = (routeMap[canon] || []).concat(c.streams || []);
+  });
+  S.structure.classes = CLASSES.map((c) => ({
+    class: c,
+    streams: [...new Set(routeMap[c] || [])],
+    subjects: [] // subjects are now from constants, not from roster
+  }));
 }
 
 function paintHeader() {
@@ -1042,6 +1378,601 @@ function showView(name) {
   }
 }
 
+// ====================== WIZARD ======================
+
+function lsKey(key) {
+  return `edutrace_wizard_${key}_${S.schoolId}`;
+}
+
+function initWizard() {
+  // Populate class dropdowns
+  const classOptions = CLASSES.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  $("wzStudentClass").innerHTML = `<option value="">Select class</option>` + classOptions;
+  $("wzAssignClass").innerHTML = `<option value="">Select class</option>` + classOptions;
+
+  // Electives grids
+  renderElectivesGrid("wzElectivesS1S2", "S1-S2");
+  renderElectivesGrid("wzElectivesS3S4", "S3-S4");
+  renderElectivesGrid("wzElectivesS5S6", "S5-S6");
+
+  // Restore flags
+  try {
+    WZ.opened = localStorage.getItem(lsKey("opened")) === "true";
+    WZ.step4Done = localStorage.getItem(lsKey("step4")) === "true";
+    const savedElectives = localStorage.getItem(lsKey("electives"));
+    if (savedElectives) WZ.electives = JSON.parse(savedElectives);
+  } catch {}
+
+  // Wire buttons
+  $("wizardClose").onclick = closeWizard;
+  $("wizardBack").onclick = () => goWizardStep(WZ.step - 1);
+  $("wizardNext").onclick = onWizardNext;
+
+  // Step 1 logo
+  setupDrop("wzLogoDrop", "wzLogoInput", async (file) => {
+    if (file.size > 5 * 1024 * 1024) { toast("Logo too large (max 5 MB)", "error"); return; }
+    const fd = new FormData(); fd.append("file", file);
+    try {
+      const token = await idToken();
+      const res = await fetch(`${W.profile}/school/id/${encodeURIComponent(S.schoolId)}/logo`, {
+        method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Upload failed");
+      const updated = await res.json();
+      S.school = updated;
+      $("wzLogoPreview").src = updated.logoUrl;
+      paintHeader();
+      toast("Logo updated", "success");
+    } catch (err) { toast(err.message, "error", 6000); }
+  });
+
+  // Step 2 student upload
+  let studentFile = null;
+  setupDrop("wzStudentDrop", "wzStudentInput", (file) => {
+    const ok = /\.(xlsx|xls|xlsm|csv)$/i.test(file.name);
+    if (!ok) { toast("Only .xlsx, .xls, .xlsm or .csv", "error"); return; }
+    if (file.size > 25 * 1024 * 1024) { toast("Max 25 MB", "error"); return; }
+    studentFile = file;
+    $("wzStudentFileInfo").innerHTML = `<div class="file-pill"><i class="fa-solid fa-file-excel" style="color:var(--green)"></i> <b>${esc(file.name)}</b> <span style="color:var(--muted)">${fmtBytes(file.size)}</span></div>`;
+    $("wzStudentUpload").disabled = false;
+  });
+  $("wzStudentUpload").onclick = async () => {
+    if (!studentFile) return;
+    const cls = $("wzStudentClass").value;
+    if (!cls) { toast("Pick a class", "warn"); return; }
+    const stream = $("wzStudentStream").value.trim();
+    const btn = $("wzStudentUpload"); setBtn(btn, true);
+    $("wzStudentResult").innerHTML = `<div class="card"><div class="card-body"><div class="skel h20 w50"></div><div class="skel h40"></div></div></div>`;
+    try {
+      const token = await idToken();
+      let offset = 0, batchId = null;
+      let allCreated = 0, allUpdated = 0, allUnchanged = 0, allRejected = [], processedRows = 0;
+      while (true) {
+        const fd = new FormData();
+        fd.append("file", studentFile);
+        fd.append("schoolId", S.schoolId);
+        fd.append("class", cls);
+        fd.append("stream", stream);
+        fd.append("recordType", "student");
+        if (batchId) fd.append("batchId", batchId);
+        if (offset > 0) fd.append("offset", String(offset));
+        const res = await fetch(`${W.roster}/upload-roster`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || `Upload failed (${res.status})`);
+        batchId = data.batchId || batchId;
+        allCreated += data.created || 0;
+        allUpdated += data.updated || 0;
+        allUnchanged += data.unchanged || 0;
+        if (data.rejected) allRejected.push(...data.rejected);
+        processedRows += data.processed || 0;
+        $("wzStudentResult").innerHTML = `<div class="card"><div class="card-body"><div style="font-weight:800;margin-bottom:8px">Processing… ${processedRows} rows</div><div class="skel h40"></div></div></div>`;
+        if (!data.remaining || data.remaining === 0) break;
+        offset = data.nextOffset;
+      }
+      $("wzStudentResult").innerHTML = `
+        <div class="card" style="border-left:4px solid var(--green)"><div class="card-body">
+          <h3 style="font-size:1rem;font-weight:800;margin-bottom:12px"><i class="fa-solid fa-circle-check" style="color:var(--green)"></i> Upload complete</h3>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+            <span class="pill green">${allCreated} created</span>
+            <span class="pill blue">${allUpdated} updated</span>
+            <span class="pill grey">${allUnchanged} unchanged</span>
+            ${allRejected.length ? `<span class="pill red">${allRejected.length} rejected</span>` : ""}
+          </div>
+        </div></div>`;
+      toast("Student roster uploaded", "success");
+      await loadInitial();
+    } catch (err) {
+      $("wzStudentResult").innerHTML = `<div class="card" style="border-left:4px solid var(--red)"><div class="card-body"><div style="font-weight:800;color:var(--red)"><i class="fa-solid fa-circle-xmark"></i> Upload failed</div><p style="font-size:.88rem;margin-top:6px">${esc(err.message)}</p></div></div>`;
+    } finally { setBtn(btn, false); }
+  };
+  $("wzStudentSkip").onclick = () => goWizardStep(3);
+
+  // Step 3 teacher upload
+  let teacherFile = null;
+  setupDrop("wzTeacherDrop", "wzTeacherInput", (file) => {
+    const ok = /\.(xlsx|xls|xlsm|csv)$/i.test(file.name);
+    if (!ok) { toast("Only .xlsx, .xls, .xlsm or .csv", "error"); return; }
+    if (file.size > 25 * 1024 * 1024) { toast("Max 25 MB", "error"); return; }
+    teacherFile = file;
+    $("wzTeacherFileInfo").innerHTML = `<div class="file-pill"><i class="fa-solid fa-file-excel" style="color:var(--green)"></i> <b>${esc(file.name)}</b> <span style="color:var(--muted)">${fmtBytes(file.size)}</span></div>`;
+    $("wzTeacherUpload").disabled = false;
+  });
+  $("wzTeacherUpload").onclick = async () => {
+    if (!teacherFile) return;
+    const btn = $("wzTeacherUpload"); setBtn(btn, true);
+    $("wzTeacherResult").innerHTML = `<div class="card"><div class="card-body"><div class="skel h20 w50"></div><div class="skel h40"></div></div></div>`;
+    try {
+      const token = await idToken();
+      let offset = 0, batchId = null;
+      let allCreated = 0, allUpdated = 0, allUnchanged = 0, allRejected = [], processedRows = 0;
+      while (true) {
+        const fd = new FormData();
+        fd.append("file", teacherFile);
+        fd.append("schoolId", S.schoolId);
+        fd.append("recordType", "teacher");
+        if (batchId) fd.append("batchId", batchId);
+        if (offset > 0) fd.append("offset", String(offset));
+        const res = await fetch(`${W.roster}/upload-roster`, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || `Upload failed (${res.status})`);
+        batchId = data.batchId || batchId;
+        allCreated += data.created || 0;
+        allUpdated += data.updated || 0;
+        allUnchanged += data.unchanged || 0;
+        if (data.rejected) allRejected.push(...data.rejected);
+        processedRows += data.processed || 0;
+        $("wzTeacherResult").innerHTML = `<div class="card"><div class="card-body"><div style="font-weight:800;margin-bottom:8px">Processing… ${processedRows} rows</div><div class="skel h40"></div></div></div>`;
+        if (!data.remaining || data.remaining === 0) break;
+        offset = data.nextOffset;
+      }
+      $("wzTeacherResult").innerHTML = `
+        <div class="card" style="border-left:4px solid var(--green)"><div class="card-body">
+          <h3 style="font-size:1rem;font-weight:800;margin-bottom:12px"><i class="fa-solid fa-circle-check" style="color:var(--green)"></i> Upload complete</h3>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+            <span class="pill green">${allCreated} created</span>
+            <span class="pill blue">${allUpdated} updated</span>
+            <span class="pill grey">${allUnchanged} unchanged</span>
+            ${allRejected.length ? `<span class="pill red">${allRejected.length} rejected</span>` : ""}
+          </div>
+        </div></div>`;
+      toast("Teacher roster uploaded", "success");
+      await loadInitial();
+    } catch (err) {
+      $("wzTeacherResult").innerHTML = `<div class="card" style="border-left:4px solid var(--red)"><div class="card-body"><div style="font-weight:800;color:var(--red)"><i class="fa-solid fa-circle-xmark"></i> Upload failed</div><p style="font-size:.88rem;margin-top:6px">${esc(err.message)}</p></div></div>`;
+    } finally { setBtn(btn, false); }
+  };
+  $("wzTeacherSkip").onclick = () => goWizardStep(4);
+
+  // Step 4 electives checkboxes handled by renderElectivesGrid
+
+  // Step 5 term save
+  $("wzTermSave").onclick = async () => {
+    const name = $("wzTermName").value.trim();
+    if (!name) { toast("Term name required", "warn"); return; }
+    const btn = $("wzTermSave"); setBtn(btn, true);
+    try {
+      await api(`${W.teachers}/schools/${encodeURIComponent(S.schoolId)}/terms`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          year: parseInt($("wzTermYear").value, 10),
+          startDate: $("wzTermStart").value,
+          endDate: $("wzTermEnd").value,
+          isCurrent: $("wzTermCurrent").checked
+        })
+      });
+      closeWizard();
+      toast("Term saved", "success");
+      await loadInitial();
+      paintHeader();
+      renderDashboard();
+    } catch (err) { toast(err.message, "error", 6000); }
+    finally { setBtn(btn, false); }
+  };
+
+  // Step 6 assign class change
+  $("wzAssignClass").onchange = renderAssignListForClass;
+  $("wzAssignSave").onclick = saveAssignments;
+
+  // Step 7 school page
+  setupDrop("wzHeroDrop", "wzHeroInput", async (file) => {
+    if (file.size > 10 * 1024 * 1024) { toast("Hero image too large (max 10 MB)", "error"); return; }
+    const fd = new FormData(); fd.append("file", file);
+    try {
+      const token = await idToken();
+      const res = await fetch(`${W.profile}/school/id/${encodeURIComponent(S.schoolId)}/hero`, {
+        method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Upload failed");
+      const updated = await res.json();
+      S.school = updated;
+      WZ.page.heroImages = updated.heroImages || [];
+      renderWzHeroGrid();
+      toast("Hero image added", "success");
+    } catch (err) { toast(err.message, "error", 6000); }
+  });
+  $("wzAddLeader").onclick = () => {
+    WZ.page.leaders.push({ name: "", role: "" });
+    renderWzLeaders();
+  };
+  $("wzPageSave").onclick = saveWzPage;
+
+  // Restore current step display
+  goWizardStep(WZ.step, true);
+}
+
+function renderElectivesGrid(containerId, band) {
+  const el = $(containerId);
+  if (!el) return;
+  const selected = new Set(WZ.electives[band] || []);
+  const groups = [
+    { key: "religious", items: ELECTIVES.religious },
+    { key: "language", items: ELECTIVES.language },
+    { key: "vocational", items: ELECTIVES.vocational }
+  ];
+  el.innerHTML = groups.map((g) => `
+    <div style="grid-column:1/-1;margin-top:4px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)">${g.key}</div>
+    ${g.items.map((s) => `
+      <label class="check" style="margin:0;font-size:.84rem">
+        <input type="checkbox" data-band="${band}" data-subject="${esc(s)}" ${selected.has(s) ? "checked" : ""}>
+        <span>${esc(s)}</span>
+      </label>
+    `).join("")}
+  `).join("");
+  qa(`[data-band="${band}"]`, el).forEach((cb) => {
+    cb.onchange = () => {
+      const set = new Set(WZ.electives[band] || []);
+      if (cb.checked) set.add(cb.dataset.subject);
+      else set.delete(cb.dataset.subject);
+      WZ.electives[band] = [...set];
+      try { localStorage.setItem(lsKey("electives"), JSON.stringify(WZ.electives)); } catch {}
+    };
+  });
+}
+
+function goWizardStep(step, silent) {
+  if (step < 1) step = 1;
+  if (step > WZ.totalSteps) step = WZ.totalSteps;
+  WZ.step = step;
+  qa(".wizard-step").forEach((s) => s.classList.toggle("active", parseInt(s.dataset.wzStep, 10) === step));
+  $("wizardStepLabel").textContent = `Step ${step} of ${WZ.totalSteps}`;
+  $("wizardBar").style.width = (step / WZ.totalSteps * 100) + "%";
+  $("wizardBack").style.visibility = step === 1 ? "hidden" : "visible";
+  $("wizardNext").innerHTML = step === WZ.totalSteps
+    ? `<span class="btn-label">Finish</span> <i class="fa-solid fa-check"></i>`
+    : `Next <i class="fa-solid fa-arrow-right"></i>`;
+
+  // Step-specific render
+  if (step === 1) renderWzStep1();
+  if (step === 2) renderWzStep2();
+  if (step === 3) renderWzStep3();
+  if (step === 4) renderWzStep4();
+  if (step === 5) renderWzStep5();
+  if (step === 6) renderWzStep6();
+  if (step === 7) renderWzStep7();
+  if (step === 8) renderWzStep8();
+
+  if (!silent) {
+    // Scroll body to top
+    $("wizardBody").scrollTop = 0;
+  }
+}
+
+function renderWzStep1() {
+  const s = S.school || {};
+  $("wzName").value = s.name || "";
+  $("wzMotto").value = s.motto || "";
+  $("wzVision").value = s.vision || "";
+  if (s.logoUrl) $("wzLogoPreview").src = s.logoUrl;
+}
+
+function renderWzStep2() {
+  // Nothing much to prefill
+}
+
+function renderWzStep3() {
+  // Nothing much to prefill
+}
+
+function renderWzStep4() {
+  renderElectivesGrid("wzElectivesS1S2", "S1-S2");
+  renderElectivesGrid("wzElectivesS3S4", "S3-S4");
+  renderElectivesGrid("wzElectivesS5S6", "S5-S6");
+}
+
+function renderWzStep5() {
+  const cur = S.terms.find((t) => t.isCurrent);
+  if (cur) {
+    $("wzTermName").value = cur.name || "";
+    $("wzTermYear").value = cur.year || new Date().getFullYear();
+    $("wzTermStart").value = cur.startDate || "";
+    $("wzTermEnd").value = cur.endDate || "";
+    $("wzTermCurrent").checked = true;
+  } else {
+    $("wzTermYear").value = new Date().getFullYear();
+  }
+}
+
+function renderWzStep6() {
+  // If a class is already selected, render its subjects
+  renderAssignListForClass();
+}
+
+function renderWzStep7() {
+  WZ.page.heroImages = (S.school && S.school.heroImages) || [];
+  WZ.page.headTeacher = (S.school && S.school.headTeacher) || "";
+  WZ.page.leaders = (S.school && S.school.leaders) || [];
+  $("wzHeadTeacher").value = WZ.page.headTeacher;
+  renderWzHeroGrid();
+  renderWzLeaders();
+}
+
+function renderWzHeroGrid() {
+  const el = $("wzHeroGrid");
+  const imgs = WZ.page.heroImages || [];
+  if (!imgs.length) { el.innerHTML = ""; return; }
+  el.innerHTML = imgs.map((url, i) => `
+    <div class="wz-img-card">
+      <img src="${esc(url)}" alt="">
+      <div class="wz-img-actions"><button class="btn btn-outline btn-sm" data-wz-del-hero="${i}" type="button"><i class="fa-solid fa-trash"></i></button></div>
+    </div>
+  `).join("");
+  qa("[data-wz-del-hero]", el).forEach((b) => b.onclick = async () => {
+    const i = parseInt(b.dataset.wzDelHero, 10);
+    try {
+      const updated = await api(`${W.profile}/school/id/${encodeURIComponent(S.schoolId)}/hero/${i}`, { method: "DELETE" });
+      S.school = updated;
+      WZ.page.heroImages = updated.heroImages || [];
+      renderWzHeroGrid();
+      toast("Removed", "success");
+    } catch (err) { toast(err.message, "error"); }
+  });
+}
+
+function renderWzLeaders() {
+  const el = $("wzLeadersList");
+  if (!WZ.page.leaders.length) { el.innerHTML = ""; return; }
+  el.innerHTML = WZ.page.leaders.map((l, i) => `
+    <div class="wz-leaders-row">
+      <input type="text" data-leader-name="${i}" maxlength="200" placeholder="Name" value="${esc(l.name || "")}">
+      <input type="text" data-leader-role="${i}" maxlength="100" placeholder="Role" value="${esc(l.role || "")}">
+      <button data-leader-del="${i}" type="button" aria-label="Remove"><i class="fa-solid fa-trash"></i></button>
+    </div>
+  `).join("");
+  qa("[data-leader-name]").forEach((inp) => inp.oninput = () => {
+    const i = parseInt(inp.dataset.leaderName, 10);
+    WZ.page.leaders[i].name = inp.value;
+  });
+  qa("[data-leader-role]").forEach((inp) => inp.oninput = () => {
+    const i = parseInt(inp.dataset.leaderRole, 10);
+    WZ.page.leaders[i].role = inp.value;
+  });
+  qa("[data-leader-del]").forEach((b) => b.onclick = () => {
+    const i = parseInt(b.dataset.leaderDel, 10);
+    WZ.page.leaders.splice(i, 1);
+    renderWzLeaders();
+  });
+}
+
+async function saveWzPage() {
+  const btn = $("wzPageSave"); setBtn(btn, true);
+  try {
+    const payload = {
+      headTeacher: $("wzHeadTeacher").value.trim(),
+      leaders: WZ.page.leaders.filter((l) => l.name || l.role)
+    };
+    const updated = await api(`${W.profile}/school/id/${encodeURIComponent(S.schoolId)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    S.school = updated;
+    toast("School page saved", "success");
+  } catch (err) { toast(err.message, "error", 6000); }
+  finally { setBtn(btn, false); }
+}
+
+function subjectsForClass(cls) {
+  const band = classBand(cls);
+  if (!band) return [];
+  if (band === "S5-S6") {
+    const electives = WZ.electives["S5-S6"] || [];
+    return [...CORE_S5_S6, ...A_LEVEL_SUBJECTS, ...electives];
+  }
+  const electives = WZ.electives[band] || [];
+  return [...CORE_S1_S4, ...electives];
+}
+
+function renderAssignListForClass() {
+  const cls = $("wzAssignClass").value;
+  const el = $("wzAssignList");
+  if (!cls) { el.innerHTML = `<p style="color:var(--muted);font-size:.86rem">Select a class to see its subjects.</p>`; return; }
+  const subjects = [...new Set(subjectsForClass(cls))];
+  const teachers = S.teachers || [];
+  if (!subjects.length) {
+    el.innerHTML = `<p style="color:var(--muted);font-size:.86rem">No subjects found for this class.</p>`;
+    return;
+  }
+  // Load existing assignments for this class from teachers
+  const existing = {};
+  teachers.forEach((t) => {
+    (t.assignments || []).forEach((a) => {
+      if (normaliseClass(a.class) === cls) {
+        existing[a.subject] = t.uid;
+      }
+    });
+  });
+  WZ.assign[cls] = existing;
+  el.innerHTML = subjects.map((sub) => `
+    <div class="wz-assign-row">
+      <label>${esc(sub)}</label>
+      <select data-assign-sub="${esc(sub)}">
+        <option value="">— Unassigned —</option>
+        ${teachers.map((t) => `<option value="${esc(t.uid)}" ${existing[sub] === t.uid ? "selected" : ""}>${esc(t.email.split("@")[0])}</option>`).join("")}
+      </select>
+    </div>
+  `).join("");
+  qa("[data-assign-sub]", el).forEach((sel) => sel.onchange = () => {
+    WZ.assign[cls][sel.dataset.assignSub] = sel.value;
+  });
+}
+
+async function saveAssignments() {
+  const cls = $("wzAssignClass").value;
+  if (!cls) { toast("Pick a class first", "warn"); return; }
+  const btn = $("wzAssignSave"); setBtn(btn, true);
+  try {
+    const assignMap = WZ.assign[cls] || {};
+    // Group by teacher
+    const byTeacher = {};
+    Object.entries(assignMap).forEach(([subject, uid]) => {
+      if (!uid) return;
+      if (!byTeacher[uid]) byTeacher[uid] = [];
+      byTeacher[uid].push({ class: cls, stream: "", subject });
+    });
+    // For each teacher, we need to merge with their existing assignments
+    for (const t of S.teachers) {
+      const existing = (t.assignments || []).filter((a) => normaliseClass(a.class) !== cls);
+      const newOnes = byTeacher[t.uid] || [];
+      const merged = [...existing, ...newOnes];
+      if (JSON.stringify(merged) === JSON.stringify(t.assignments || [])) continue;
+      await api(`${W.teachers}/schools/${encodeURIComponent(S.schoolId)}/teachers/${encodeURIComponent(t.uid)}/assignments`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assignments: merged })
+      });
+    }
+    // Also handle teachers not in S.teachers (none expected)
+    toast("Assignments saved", "success");
+    await loadInitial();
+    renderAssignListForClass();
+  } catch (err) { toast(err.message, "error", 6000); }
+  finally { setBtn(btn, false); }
+}
+
+function computeWizardStatus() {
+  const school = S.school || {};
+  const hasName = !!(school.name && school.name.trim());
+  const hasStudents = (S.structure.classes || []).some((c) => c.streams && c.streams.length) || false;
+  // Better: check if any students exist — use structure class subject-less trick? We have no student count directly.
+  // We'll infer from structure having any stream. If no streams, maybe no students. We could also check via teachers worker.
+  // Let's use the presence of any class with streams OR the school having been loaded with classes.
+  // For robustness, we'll consider step2 done if any class in structure has at least one stream.
+  const hasTeachers = (S.teachers || []).length > 0;
+  const hasTerm = (S.terms || []).some((t) => t.isCurrent) || (S.terms || []).length > 0;
+  const hasAssignments = (S.teachers || []).some((t) => (t.assignments || []).length > 0);
+  const hasPage = !!((school.heroImages && school.heroImages.length) || (school.headTeacher && school.headTeacher.trim()));
+
+  const required = { step2: hasStudents, step3: hasTeachers, step5: hasTerm, step6: hasAssignments };
+  const optional = { step1: hasName, step4: WZ.step4Done, step7: hasPage };
+
+  let missedRequired = 0;
+  if (!required.step2) missedRequired++;
+  if (!required.step3) missedRequired++;
+  if (!required.step5) missedRequired++;
+  if (!required.step6) missedRequired++;
+
+  const firstMissed = [];
+  if (!required.step2) firstMissed.push(2);
+  if (!required.step3) firstMissed.push(3);
+  if (!required.step5) firstMissed.push(5);
+  if (!required.step6) firstMissed.push(6);
+
+  const allRequiredDone = missedRequired === 0;
+  return { required, optional, missedRequired, firstMissed, allRequiredDone, hasPage };
+}
+
+function renderWzStep8() {
+  const status = computeWizardStatus();
+  const items = [
+    { step: 1, label: "School identity", done: status.optional.step1, optional: true },
+    { step: 2, label: "Student roster", done: status.required.step2, optional: false },
+    { step: 3, label: "Teacher roster", done: status.required.step3, optional: false },
+    { step: 4, label: "Subjects", done: status.optional.step4, optional: true },
+    { step: 5, label: "Current term", done: status.required.step5, optional: false },
+    { step: 6, label: "Teacher assignments", done: status.required.step6, optional: false },
+    { step: 7, label: "School page", done: status.optional.step7, optional: true }
+  ];
+  $("wzSummaryList").innerHTML = items.map((it) => `
+    <li class="${it.done ? "done" : "missed"}">
+      <i class="fa-solid ${it.done ? "fa-circle-check" : "fa-circle-minus"}"></i>
+      <span class="wz-label">Step ${it.step}: ${esc(it.label)}${it.optional ? " <em style=\"color:var(--muted);font-weight:400\">(optional)</em>" : ""}</span>
+      <span class="wz-state">${it.done ? "Done" : "Skipped"}</span>
+    </li>
+  `).join("");
+
+  const optionalNote = $("wzOptionalNote");
+  const optionalPending = items.filter((i) => i.optional && !i.done);
+  if (optionalPending.length) {
+    optionalNote.style.display = "";
+    optionalNote.innerHTML = `<b>Add these to finish your school page:</b> ${optionalPending.map((i) => i.label).join(", ")}. You can do this anytime from the sidebar.`;
+  } else {
+    optionalNote.style.display = "none";
+  }
+}
+
+function onWizardNext() {
+  if (WZ.step === 8) { closeWizard(); return; }
+  if (WZ.step === 4) {
+    // Persist step 4 done
+    WZ.step4Done = true;
+    try {
+      localStorage.setItem(lsKey("step4"), "true");
+      localStorage.setItem(lsKey("electives"), JSON.stringify(WZ.electives));
+    } catch {}
+  }
+  if (WZ.step === 1) {
+    // Save school name/motto/vision quickly
+    saveWzStep1().then(() => goWizardStep(2)).catch(() => goWizardStep(2));
+    return;
+  }
+  goWizardStep(WZ.step + 1);
+}
+
+async function saveWzStep1() {
+  const name = $("wzName").value.trim();
+  if (!name) return; // let them skip if blank
+  const body = {
+    name,
+    motto: $("wzMotto").value.trim(),
+    vision: $("wzVision").value.trim()
+  };
+  const updated = await api(`${W.profile}/school/id/${encodeURIComponent(S.schoolId)}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  S.school = updated;
+  paintHeader();
+}
+
+function closeWizard() {
+  $("wizardOverlay").classList.remove("show");
+  // Save current step
+  try { localStorage.setItem(lsKey("step"), String(WZ.step)); } catch {}
+  renderDashboard();
+}
+
+function openWizard(step) {
+  $("wizardOverlay").classList.add("show");
+  goWizardStep(step || 1);
+}
+
+function maybeAutoOpenWizard() {
+  let opened = false;
+  try { opened = localStorage.getItem(lsKey("opened")) === "true"; } catch {}
+  if (opened) return;
+  try { localStorage.setItem(lsKey("opened"), "true"); } catch {}
+  // Only auto-open if required steps missing
+  const status = computeWizardStatus();
+  if (!status.allRequiredDone) {
+    openWizard(1);
+  }
+}
+
+// ====================== END WIZARD ======================
+
 async function renderDashboard() {
   $("dashSub").textContent = S.school ? S.school.name : "School overview";
   $("dashStats").innerHTML = `
@@ -1049,6 +1980,42 @@ async function renderDashboard() {
     <div class="stat"><div class="skel h20"></div><div class="skel h40"></div></div>
     <div class="stat"><div class="skel h20"></div><div class="skel h40"></div></div>
     <div class="stat"><div class="skel h20"></div><div class="skel h40"></div></div>`;
+
+  // Wizard banner
+  const status = computeWizardStatus();
+  const banner = $("wzDashBanner");
+  if (!status.allRequiredDone) {
+    const missed = status.missedRequired;
+    banner.innerHTML = `
+      <div class="wz-banner">
+        <div class="wz-banner-text"><b>Setup not finished:</b> ${missed} step${missed > 1 ? "s" : ""} left.</div>
+        <button class="btn btn-primary btn-sm" id="wzContinueBtn" type="button">Continue from step ${status.firstMissed[0] || 1}</button>
+      </div>`;
+    $("wzContinueBtn").onclick = () => openWizard(status.firstMissed[0] || 1);
+  } else if (!status.optional.step7 && !status.optional.step4) {
+    banner.innerHTML = `
+      <div class="wz-banner" style="background:#F0F9F2;border-color:#C8E6C9;border-left-color:var(--green)">
+        <div class="wz-banner-text" style="font-weight:500">All required steps are complete. <b>Add these to finish your school page:</b> subjects, school page details.</div>
+        <button class="btn btn-outline btn-sm" id="wzContinueBtn" type="button">Continue setup</button>
+      </div>`;
+    $("wzContinueBtn").onclick = () => openWizard(4);
+  } else if (!status.optional.step7) {
+    banner.innerHTML = `
+      <div class="wz-banner" style="background:#F0F9F2;border-color:#C8E6C9;border-left-color:var(--green)">
+        <div class="wz-banner-text" style="font-weight:500">All required steps are complete. <b>Add school page details</b> to finish your public page.</div>
+        <button class="btn btn-outline btn-sm" id="wzContinueBtn" type="button">Continue setup</button>
+      </div>`;
+    $("wzContinueBtn").onclick = () => openWizard(7);
+  } else if (!status.optional.step4) {
+    banner.innerHTML = `
+      <div class="wz-banner" style="background:#F0F9F2;border-color:#C8E6C9;border-left-color:var(--green)">
+        <div class="wz-banner-text" style="font-weight:500">All required steps are complete. <b>Tick electives</b> to complete your subjects list.</div>
+        <button class="btn btn-outline btn-sm" id="wzContinueBtn" type="button">Continue setup</button>
+      </div>`;
+    $("wzContinueBtn").onclick = () => openWizard(4);
+  } else {
+    banner.innerHTML = "";
+  }
 
   const curTerm = S.terms.find((t) => t.id === S.currentTermId);
 
@@ -1061,12 +2028,12 @@ async function renderDashboard() {
     <div class="stat green">
       <div class="label">Teachers</div>
       <div class="value">${S.teachers.length}</div>
-      <div class="sub">${S.teachers.filter((t) => t.assigned).length} with assignments</div>
+      <div class="sub">${S.teachers.filter((t) => (t.assignments || []).length > 0).length} with assignments</div>
     </div>
     <div class="stat yellow">
       <div class="label">Classes</div>
-      <div class="value">${S.structure.classes.length}</div>
-      <div class="sub">from student roster</div>
+      <div class="value">${CLASSES.length}</div>
+      <div class="sub">S1 to S6</div>
     </div>
     <div class="stat ${S.scoring && S.scoring.mode === "cbc" ? "green" : ""}">
       <div class="label">Scoring Mode</div>
@@ -1358,6 +2325,8 @@ function openEditSection(id) {
 }
 
 function renderRoster() {
+  // Populate class dropdown with CLASSES
+  $("rsClass").innerHTML = `<option value="">Select class</option>` + CLASSES.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
   let selectedFile = null;
   const fileInfo = $("rsFileInfo");
   const uploadBtn = $("rsUploadBtn");
@@ -1491,7 +2460,7 @@ async function renderTeachers() {
                   <div style="font-weight:700">${esc(t.email.split("@")[0])}</div>
                   <div style="font-size:.78rem;color:var(--muted)">${esc(t.email)}</div>
                 </td>
-                <td>${t.assignments.length ? `<span class="pill blue">${t.assignments.length}</span>` : `<span class="pill grey">none</span>`}</td>
+                <td>${(t.assignments || []).length ? `<span class="pill blue">${(t.assignments || []).length}</span>` : `<span class="pill grey">none</span>`}</td>
                 <td>${t.classTeacherOf ? `<span class="pill green">${esc(t.classTeacherOf.class)}${t.classTeacherOf.stream ? " " + esc(t.classTeacherOf.stream) : ""}</span>` : `<span class="pill grey">—</span>`}</td>
                 <td>${t.isDoS ? `<span class="pill yellow">DoS</span> ` : ""}${t.isBursar ? `<span class="pill yellow">Bursar</span>` : ""}${!t.isDoS && !t.isBursar ? `<span class="pill grey">—</span>` : ""}</td>
                 <td>
@@ -1518,8 +2487,7 @@ function openTeacherEdit(uid) {
   const t = S.teachers.find((x) => x.uid === uid);
   if (!t) return;
 
-  const classesOpts = S.structure.classes;
-  const classOptionsHtml = classesOpts.map((c) => `<option value="${esc(c.class)}">${esc(c.class)}</option>`).join("");
+  const classOptionsHtml = CLASSES.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
 
   openModal({
     title: t.email.split("@")[0],
@@ -1578,14 +2546,16 @@ function openTeacherEdit(uid) {
   renderAssignList();
 
   $("asClass").onchange = () => {
-    const cls = S.structure.classes.find((c) => c.class === $("asClass").value);
+    const cls = $("asClass").value;
     const streamSel = $("asStream");
     const subjSel = $("asSubject");
     streamSel.innerHTML = `<option value="">Stream</option>`;
     subjSel.innerHTML = `<option value="">Subject</option>`;
     if (cls) {
-      cls.streams.forEach((s) => streamSel.insertAdjacentHTML("beforeend", `<option value="${esc(s)}">${esc(s)}</option>`));
-      cls.subjects.forEach((s) => subjSel.insertAdjacentHTML("beforeend", `<option value="${esc(s)}">${esc(s)}</option>`));
+      const streams = (S.structure.classes.find((c) => c.class === cls) || {}).streams || [];
+      streams.forEach((s) => streamSel.insertAdjacentHTML("beforeend", `<option value="${esc(s)}">${esc(s)}</option>`));
+      const subjects = [...new Set(subjectsForClass(cls))];
+      subjects.forEach((s) => subjSel.insertAdjacentHTML("beforeend", `<option value="${esc(s)}">${esc(s)}</option>`));
     }
   };
 
@@ -1607,10 +2577,13 @@ function openTeacherEdit(uid) {
     setTimeout(() => { if (classTeacherOf.stream) $("ctStream").value = classTeacherOf.stream; }, 0);
   }
   $("ctClass").onchange = () => {
-    const cls = S.structure.classes.find((c) => c.class === $("ctClass").value);
+    const cls = $("ctClass").value;
     const s = $("ctStream");
     s.innerHTML = `<option value="">Stream (optional)</option>`;
-    if (cls) cls.streams.forEach((x) => s.insertAdjacentHTML("beforeend", `<option value="${esc(x)}">${esc(x)}</option>`));
+    if (cls) {
+      const streams = (S.structure.classes.find((c) => c.class === cls) || {}).streams || [];
+      streams.forEach((x) => s.insertAdjacentHTML("beforeend", `<option value="${esc(x)}">${esc(x)}</option>`));
+    }
   };
   $("ctClass").dispatchEvent(new Event("change"));
   if (classTeacherOf && classTeacherOf.stream) {
@@ -1670,12 +2643,20 @@ async function renderStructure() {
   c.innerHTML = `<div class="skel h20 w50"></div><div class="skel h80"></div><div class="skel h80"></div>`;
   try {
     const data = await api(`${W.teachers}/schools/${encodeURIComponent(S.schoolId)}/structure`);
-    S.structure = data;
-    if (!data.classes.length) {
-      c.innerHTML = `<div class="empty"><i class="fa-solid fa-sitemap"></i><h3>No structure yet</h3><p>Upload a student roster to populate classes, streams and subjects.</p></div>`;
-      return;
-    }
-    c.innerHTML = data.classes.map((cl) => `
+    // Merge with CLASSES
+    const routeMap = {};
+    (data.classes || []).forEach((cl) => {
+      const canon = normaliseClass(cl.class);
+      if (canon) routeMap[canon] = (routeMap[canon] || []).concat(cl.streams || []);
+    });
+    const merged = CLASSES.map((cl) => ({
+      class: cl,
+      streams: [...new Set(routeMap[cl] || [])],
+      subjects: subjectsForClass(cl)
+    }));
+    S.structure.classes = merged;
+
+    c.innerHTML = merged.map((cl) => `
       <div style="margin-bottom:16px;border:1px solid var(--border);background:#fff">
         <div style="padding:12px 16px;background:var(--light);border-bottom:1px solid var(--border);font-weight:800">${esc(cl.class)}</div>
         <div style="padding:14px 16px">
@@ -2214,8 +3195,7 @@ async function sheetAction(action, btn) {
 }
 
 function renderReports() {
-  const classes = S.structure.classes;
-  $("repClass").innerHTML = `<option value="">Select class</option>` + classes.map((c) => `<option value="${esc(c.class)}">${esc(c.class)}</option>`).join("");
+  $("repClass").innerHTML = `<option value="">Select class</option>` + CLASSES.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
   $("repTerm").innerHTML = S.terms.map((t) => `<option value="${esc(t.id)}"${t.id === S.currentTermId ? " selected" : ""}>${esc(t.name)}${t.year ? ", " + t.year : ""}</option>`).join("");
   $("repList").innerHTML = `<div class="empty"><i class="fa-solid fa-chart-line"></i><h3>Pick a class and term</h3><p>Then click Load to view results.</p></div>`;
 
@@ -2335,7 +3315,7 @@ async function viewReportCard(rid, termId) {
 }
 
 function renderNotes() {
-  $("noteClass").innerHTML = `<option value="">Select class</option>` + S.structure.classes.map((c) => `<option value="${esc(c.class)}">${esc(c.class)}</option>`).join("");
+  $("noteClass").innerHTML = `<option value="">Select class</option>` + CLASSES.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
   $("notesList").innerHTML = `<div class="empty"><i class="fa-solid fa-comment-dots"></i><h3>Pick a class</h3><p>Then click Load to see students.</p></div>`;
 
   $("noteLoad").onclick = async () => {
@@ -2553,4 +3533,4 @@ async function renderAudit() {
 </script>
 
 </body>
-      </html>
+  </html>
