@@ -695,7 +695,7 @@ function renderReport() {
     `<div class="stat ${r.subjects.length ? "green" : ""}">
       <div class="label">Subjects</div>
       <div class="value">${r.subjects.length}</div>
-      <div class="sub">with data this term</div>
+      <div class="sub">${r.subjects.filter((s) => (s.assessments || []).some((a) => a.status === "entered")).length} with marks</div>
     </div>`,
     r.rank && r.rank.position
       ? `<div class="stat yellow">
