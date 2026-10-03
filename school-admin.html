@@ -1668,8 +1668,10 @@ function goWizardStep(step, silent) {
 function renderWzStep1() {
   const s = S.school || {};
   $("wzName").value = s.name || "";
-  $("wzMotto").value = s.motto || "";
-  $("wzVision").value = s.vision || "";
+const unesc = (v) => v.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+const secText = (t) => { const x = (s.sections || []).find((z) => z.title === t); return x ? unesc((x.blocks || []).map((b) => (b.runs || []).map((r) => r.text || "").join("")).join("\n")) : ""; };
+  $("wzMotto").value = secText("Motto");
+  $("wzVision").value = secText("Vision");
   if (s.logoUrl) $("wzLogoPreview").src = s.logoUrl;
 }
 
@@ -1961,18 +1963,18 @@ function onWizardNext() {
 async function saveWzStep1() {
   const name = $("wzName").value.trim();
   if (!name) return; // let them skip if blank
-  const body = {
-    name,
-    motto: $("wzMotto").value.trim(),
-    vision: $("wzVision").value.trim()
-  };
-  const updated = await api(`${W.profile}/school/id/${encodeURIComponent(S.schoolId)}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-  // If the profile worker echoes back only a subset, keep what we already have.
-  S.school = { ...(S.school || {}), ...(updated || {}), name, motto: body.motto, vision: body.vision };
+  const hdr = { "Content-Type": "application/json" };
+  const base = `${W.profile}/school/id/${encodeURIComponent(S.schoolId)}`;
+  const updated = await api(base, { method: "PATCH", headers: hdr, body: JSON.stringify({ name }) });
+  S.school = { ...(S.school || {}), ...(updated || {}), name };
+  for (const [title, text] of [["Motto", $("wzMotto").value.trim()], ["Vision", $("wzVision").value.trim()]]) {
+    const existing = (S.school.sections || []).find((s) => s.title === title);
+    if (!text && !existing) continue;
+    const body = JSON.stringify({ title, blocks: text ? [{ type: "paragraph", runs: [{ text }] }] : [] });
+    S.school = existing
+      ? await api(`${base}/sections/${encodeURIComponent(existing.id)}`, { method: "PATCH", headers: hdr, body })
+      : await api(`${base}/sections`, { method: "POST", headers: hdr, body });
+  }
   paintHeader();
 }
 
@@ -3562,4 +3564,4 @@ async function renderAudit() {
 </script>
 
 </body>
-  </html>
+ </html>
