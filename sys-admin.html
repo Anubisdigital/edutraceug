@@ -970,7 +970,7 @@ async function loadRecent() {
               <tr>
                 <td data-label="School">
                   <div class="name">${esc(r.schoolName)}</div>
-                  <div class="meta">${esc(r.location)} ·${r.studentCount} students</div>
+                  <div class="meta">${esc(r.location)} · ${r.studentCount} students</div>
                 </td>
                 <td data-label="Registrar">${esc(r.registrarName)}</td>
                 <td data-label="Status">${statusPill(r.status)}</td>
@@ -1039,7 +1039,7 @@ async function loadRequests(status) {
               <tr>
                 <td data-label="School">
                   <div class="name">${esc(r.schoolName)}</div>
-                  <div class="meta">${esc(r.location)} ·${r.studentCount} students</div>
+                  <div class="meta">${esc(r.location)} · ${r.studentCount} students</div>
                 </td>
                 <td data-label="Registrar">
                   <div>${esc(r.registrarName)}</div>
@@ -1171,12 +1171,12 @@ async function openRequestDetail(id) {
       ${req.approvedAt ? `
         <div class="detail-row">
           <div class="key">Approved</div>
-          <div class="val">${fmtDateTime(req.approvedAt)} by${esc(req.approvedBy || "")}</div>
+          <div class="val">${fmtDateTime(req.approvedAt)} by ${esc(req.approvedBy || "")}</div>
         </div>` : ""}
       ${req.rejectedAt ? `
         <div class="detail-row">
           <div class="key">Rejected</div>
-          <div class="val">${fmtDateTime(req.rejectedAt)} by ${esc(req.rejectedBy \vert{}\vert{} "")}${req.rejectionReason ? " — " + esc(req.rejectionReason) : ""}</div>
+          <div class="val">${fmtDateTime(req.rejectedAt)} by ${esc(req.rejectedBy || "")}${req.rejectionReason ? " — " + esc(req.rejectionReason) : ""}</div>
         </div>` : ""}
     </div>
   `;
@@ -1436,7 +1436,8 @@ async function loadSchools() {
               <th>Location</th>
               <th>Contact</th>
               <th>Theme</th>
-              <th>Action</th>
+              <th>Subscription</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -1462,6 +1463,10 @@ async function loadSchools() {
                 <td data-label="Theme">
                   <span style="display:inline-block;width:20px;height:20px;border:1px solid var(--border);background:${esc(s.themeColor || "#3570BC")}"></span>
                 </td>
+                <td data-label="Subscription">
+                  ${s.subscriptionActive ? `<span class="pill green">Active</span>` : `<span class="pill grey">Inactive</span>`}
+                  <button class="btn ${s.subscriptionActive ? "btn-outline" : "btn-green"} btn-sm" data-sub="${esc(s.id)}" data-active="${s.subscriptionActive ? "1" : "0"}" type="button" style="margin-left:8px">${s.subscriptionActive ? "Deactivate" : "Activate"}</button>
+                </td>
                 <td class="actions">
                   ${s.slug
                     ? `<a href="https://${esc(s.slug)}.edutraceug.com" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
@@ -1474,6 +1479,27 @@ async function loadSchools() {
           </tbody>
         </table>
       </div>`;
+
+    qa("[data-sub]", $("schoolsList")).forEach((b) => b.addEventListener("click", async () => {
+      const turnOn = b.dataset.active !== "1";
+      const ok = await confirmDialog(
+        turnOn ? "Activate subscription" : "Deactivate subscription",
+        turnOn ? "Bulk email will be enabled for this school." : "Bulk email will be disabled for this school.",
+        turnOn ? "Activate" : "Deactivate",
+        !turnOn
+      );
+      if (!ok) return;
+      setBtn(b, true);
+      try {
+        await api(`${WORKER}/schools/${encodeURIComponent(b.dataset.sub)}/subscription`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ active: turnOn })
+        });
+        toast(turnOn ? "Subscription activated" : "Subscription deactivated", "success");
+        loadSchools();
+      } catch (err) { setBtn(b, false); toast(err.message, "error"); }
+    }));
   } catch (err) {
     $("schoolsList").innerHTML = `
       <div class="empty">
@@ -1503,8 +1529,8 @@ async function loadAdmins() {
       $("adminsList").innerHTML = `
         <div class="empty">
           <i class="fa-solid fa-user-shield"></i>
-          <h3>No admin accounts found</h3>
-          <p>School admin accounts created during approval will appear here.</p>
+          <h3>No admins yet</h3>
+          <p>Approve a school request to create one.</p>
         </div>`;
       return;
     }
@@ -1514,20 +1540,26 @@ async function loadAdmins() {
         <table class="tbl">
           <thead>
             <tr>
-              <th>Admin Email</th>
-              <th>School ID</th>
-              <th>Role</th>
+              <th>Email</th>
+              <th>Name</th>
+              <th>School</th>
+              <th>Subdomain</th>
               <th>Created</th>
             </tr>
           </thead>
           <tbody>
             ${list.map((a) => `
               <tr>
-                <td data-label="Admin Email">
-                  <div class="name">${esc(a.email)}</div>
+                <td data-label="Email"><div class="name">${esc(a.email)}</div></td>
+                <td data-label="Name">${esc(a.name || "—")}</td>
+                <td data-label="School">${esc(a.schoolName || "—")}</td>
+                <td data-label="Subdomain">
+                  ${a.schoolSlug
+                    ? `<a href="https://${esc(a.schoolSlug)}.edutraceug.com" target="_blank" rel="noopener" style="color:var(--primary);font-weight:700">
+                        ${esc(a.schoolSlug)}.edutraceug.com
+                       </a>`
+                    : `<span class="pill grey">—</span>`}
                 </td>
-                <td data-label="School ID" class="meta" style="font-family:monospace">${esc(a.schoolId || "—")}</td>
-                <td data-label="Role"><span class="pill blue">${esc(a.role || "Admin")}</span></td>
                 <td data-label="Created" class="meta">${fmtDate(a.createdAt)}</td>
               </tr>
             `).join("")}
@@ -1544,8 +1576,28 @@ async function loadAdmins() {
   }
 }
 
-/* Auto-start */
-bootApp();
+/* ================================================================== *
+ * HASH CHANGE ROUTER
+ * ================================================================== */
+window.addEventListener("hashchange", () => {
+  if (!getToken()) return;
+  const name = (location.hash || "").replace(/^#\/?/, "") || "dashboard";
+  if (["dashboard", "requests", "schools", "admins"].includes(name)) {
+    showView(name);
+  }
+});
+
+/* ================================================================== *
+ * INIT
+ * ================================================================== */
+(async function init() {
+  if (getToken()) {
+    await bootApp();
+  } else {
+    showLogin();
+  }
+})();
 </script>
+
 </body>
-</html>
+  </html>
