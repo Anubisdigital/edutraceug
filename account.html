@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en-UG">
 <head>
 <meta charset="UTF-8">
@@ -59,7 +59,7 @@ input,select,textarea{font-family:inherit;font-size:1rem}
 .header .back:hover{color:var(--blue)}
 
 /* main */
-main{flex:1;padding:40px 0 60px}
+main{flex:1;padding:40px 0 60px;padding-bottom:90px}
 .card{background:#fff;border:1px solid var(--border);padding:32px 28px}
 .card-head{text-align:center;margin-bottom:26px}
 .card-head .school-name{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px}
@@ -80,12 +80,13 @@ main{flex:1;padding:40px 0 60px}
 .input-wrap i.lead{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .input-wrap input,.input-wrap select{padding-left:42px}
 .input-wrap input.no-icon,.input-wrap select.no-icon{padding-left:14px}
-.field input,.field select{width:100%;padding:13px 14px;border:2px solid var(--border);background:#fff;color:var(--dark);font-size:.95rem;font-weight:500;transition:border-color .15s}
+.input-wrap input[type="password"],.input-wrap input[type="text"][id$="Password"]{padding-right:46px}
+.field input,.field select{width:100%;padding:13px 14px 13px 42px;border:2px solid var(--border);background:#fff;color:var(--dark);font-size:16px;font-weight:500;transition:border-color .15s}
 .field input:focus,.field select:focus{outline:none;border-color:var(--blue)}
 .field input.error,.field select.error{border-color:var(--red)}
 .field .err-msg{color:var(--red);font-size:.78rem;font-weight:600;margin-top:5px;display:none}
 .field.has-error .err-msg{display:block}
-.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);padding:6px;color:var(--muted);font-size:.9rem}
+.pw-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:40px;height:40px;min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;padding:0;color:var(--muted);font-size:.9rem}
 .pw-toggle:hover{color:var(--blue)}
 .pw-strength{height:4px;background:var(--border);margin-top:6px;position:relative;overflow:hidden}
 .pw-strength i{position:absolute;top:0;left:0;height:100%;width:0;transition:width .25s, background .25s}
@@ -164,7 +165,7 @@ footer .credit a{color:#999;text-decoration:underline}
 
 /* responsive */
 @media(max-width:640px){
-  main{padding:24px 0 40px}
+  main{padding:24px 0 40px;padding-bottom:90px}
   .card,.skel-card{padding:24px 20px}
   .card-head h1{font-size:1.35rem}
   .header .container{max-width:480px}
@@ -172,7 +173,8 @@ footer .credit a{color:#999;text-decoration:underline}
   .brand img{height:34px}
   .header .back span{display:none}
   footer .container{justify-content:center;text-align:center}
-  .roles{grid-template-columns:1fr 1fr}
+  .roles{grid-template-columns:repeat(3,1fr)}
+  .role-opt{padding:12px 4px}
 }
 @media(prefers-reduced-motion:reduce){
   .skel{animation:none}
@@ -399,7 +401,7 @@ footer .credit a{color:#999;text-decoration:underline}
             <label for="paRelationship">Relationship</label>
             <div class="input-wrap">
               <i class="fa-solid fa-people-roof lead"></i>
-              <select id="paRelationship" class="no-icon">
+              <select id="paRelationship">
                 <option value="">Select…</option>
                 <option value="mother">Mother</option>
                 <option value="father">Father</option>
