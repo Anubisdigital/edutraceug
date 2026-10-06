@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en-UG">
 <head>
 <meta charset="UTF-8">
@@ -346,7 +346,15 @@ footer .credit a{color:#999;text-decoration:underline}
             <label for="stClass">Class</label>
             <div class="input-wrap">
               <i class="fa-solid fa-chalkboard lead"></i>
-              <input type="text" id="stClass" placeholder="e.g. S.2">
+              <select id="stClass">
+                <option value="">Select class…</option>
+                <option value="Senior 1">Senior 1</option>
+                <option value="Senior 2">Senior 2</option>
+                <option value="Senior 3">Senior 3</option>
+                <option value="Senior 4">Senior 4</option>
+                <option value="Senior 5">Senior 5</option>
+                <option value="Senior 6">Senior 6</option>
+              </select>
             </div>
             <div class="err-msg"></div>
           </div>
@@ -389,7 +397,7 @@ footer .credit a{color:#999;text-decoration:underline}
             <label for="teClasses">Classes <span class="hint">comma-separated</span></label>
             <div class="input-wrap">
               <i class="fa-solid fa-chalkboard lead"></i>
-              <input type="text" id="teClasses" placeholder="S.1, S.2">
+              <input type="text" id="teClasses" placeholder="Senior 1, Senior 2">
             </div>
             <div class="err-msg"></div>
           </div>
@@ -430,7 +438,15 @@ footer .credit a{color:#999;text-decoration:underline}
             <label for="paChildClass">Child's class</label>
             <div class="input-wrap">
               <i class="fa-solid fa-chalkboard lead"></i>
-              <input type="text" id="paChildClass" placeholder="e.g. S.2">
+              <select id="paChildClass">
+                <option value="">Select class…</option>
+                <option value="Senior 1">Senior 1</option>
+                <option value="Senior 2">Senior 2</option>
+                <option value="Senior 3">Senior 3</option>
+                <option value="Senior 4">Senior 4</option>
+                <option value="Senior 5">Senior 5</option>
+                <option value="Senior 6">Senior 6</option>
+              </select>
             </div>
             <div class="err-msg"></div>
           </div>
@@ -976,7 +992,7 @@ function validateRoleFields(role, rf) {
   if (role === "student") {
     if (!rf.firstName) errs.push(["stFirstName", "First name is required."]);
     if (!rf.lastName) errs.push(["stLastName", "Last name is required."]);
-    if (!rf.class) errs.push(["stClass", "Class is required."]);
+    if (!rf.class) errs.push(["stClass", "Select your class."]);
   } else if (role === "teacher") {
     if (!rf.firstName) errs.push(["teFirstName", "First name is required."]);
     if (!rf.lastName) errs.push(["teLastName", "Last name is required."]);
@@ -986,7 +1002,7 @@ function validateRoleFields(role, rf) {
     if (!rf.relationship) errs.push(["paRelationship", "Select a relationship."]);
     if (!rf.childFirstName) errs.push(["paChildFirstName", "Child's first name is required."]);
     if (!rf.childLastName) errs.push(["paChildLastName", "Child's last name is required."]);
-    if (!rf.childClass) errs.push(["paChildClass", "Child's class is required."]);
+    if (!rf.childClass) errs.push(["paChildClass", "Select your child's class."]);
     if (!rf.consent) errs.push(["paConsent", "You must give consent to continue."]);
   }
   return errs;
@@ -1248,4 +1264,4 @@ $("year").textContent = new Date().getFullYear();
 </script>
 
 </body>
-</html>
+ </html>
