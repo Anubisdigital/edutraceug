@@ -120,15 +120,15 @@ input,select{font-family:inherit;font-size:1rem;color:inherit}
 .stat .sub{font-size:.75rem;color:var(--muted);margin-top:2px}
 
 /* subjects */
-.subjects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.subj{background:#fff;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column}
+.subjects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;width:100%}
+.subj{background:#fff;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0;width:100%;overflow:hidden}
 .subj-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--light)}
-.subj-head h3{font-size:.95rem;font-weight:800;line-height:1.2}
-.subj-body{padding:8px 16px 12px;flex:1}
+.subj-head h3{font-size:.95rem;font-weight:800;line-height:1.2;word-break:break-word}
+.subj-body{padding:8px 16px 12px;flex:1;max-height:300px;overflow-y:auto}
 .subj-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--border);font-size:.85rem}
 .subj-row:last-child{border-bottom:none}
-.subj-row .type{color:var(--muted);font-weight:600}
-.subj-row .val{font-weight:700;font-variant-numeric:tabular-nums}
+.subj-row .type{color:var(--muted);font-weight:600;word-break:break-word;flex:1}
+.subj-row .val{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0}
 .subj-row .val small{color:var(--muted);font-weight:500;font-size:.75rem;margin-left:2px}
 .subj-row.absent .val,.subj-row.excused .val,.subj-row.na .val,.subj-row.missing .val{color:var(--muted);font-style:italic;font-weight:500}
 .subj-foot{padding:10px 16px;border-top:1px solid var(--border);background:#fafbfc;display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -200,146 +200,6 @@ input,select{font-family:inherit;font-size:1rem;color:inherit}
 .empty h3{font-size:1.05rem;font-weight:800;margin-bottom:6px;color:var(--dark)}
 .empty p{font-size:.9rem}
 
-/* ---------- HOLIDAY COACHING BANNER ---------- */
-.holiday-banner{
-  background: linear-gradient(135deg, #1A2A4A 0%, #2A4A7A 100%);
-  color: #fff;
-  padding: 18px 22px;
-  margin-bottom: 24px;
-  border-radius: 0;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-  border-left: 6px solid var(--yellow);
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  overflow: hidden;
-}
-.holiday-banner::after{
-  content: "\f0f4";
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  position: absolute;
-  right: 12px;
-  bottom: -10px;
-  font-size: 5rem;
-  opacity: .08;
-  color: #fff;
-  pointer-events: none;
-}
-.hb-icon{
-  width: 52px;
-  height: 52px;
-  background: rgba(255,255,255,.12);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: var(--yellow);
-  flex-shrink: 0;
-}
-.hb-text{
-  flex: 1;
-  min-width: 200px;
-  z-index: 1;
-}
-.hb-text h3{
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -.3px;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.hb-text h3 .hb-badge{
-  font-size: .6rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .8px;
-  background: var(--yellow);
-  color: #1A1A1A;
-  padding: 3px 10px;
-  border-radius: 20px;
-}
-.hb-text p{
-  font-size: .85rem;
-  color: rgba(255,255,255,.85);
-  line-height: 1.5;
-  max-width: 520px;
-}
-.hb-action{
-  flex-shrink: 0;
-  z-index: 1;
-}
-.hb-action .btn-holiday{
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--yellow);
-  color: #1A1A1A;
-  padding: 12px 24px;
-  font-weight: 800;
-  font-size: .88rem;
-  letter-spacing: .3px;
-  border: none;
-  border-radius: 0;
-  transition: all .2s;
-  text-transform: uppercase;
-  white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0,0,0,.25);
-}
-.hb-action .btn-holiday:hover{
-  background: #e0a010;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0,0,0,.3);
-}
-.hb-action .btn-holiday i{
-  font-size: 1rem;
-}
-.hb-action .btn-holiday small{
-  display: block;
-  font-size: .65rem;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
-  opacity: .75;
-  margin-top: 1px;
-}
-
-@media(max-width:720px){
-  .holiday-banner{
-    padding: 16px 18px;
-    gap: 12px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .hb-icon{
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-  }
-  .hb-text h3{
-    font-size: 1rem;
-  }
-  .hb-text p{
-    font-size: .8rem;
-  }
-  .hb-action{
-    width: 100%;
-  }
-  .hb-action .btn-holiday{
-    width: 100%;
-    justify-content: center;
-    padding: 14px 20px;
-    font-size: .85rem;
-  }
-}
-/* ---------- END HOLIDAY BANNER ---------- */
-
 /* responsive */
 @media(max-width:720px){
   .overview-inner{grid-template-columns:1fr;gap:18px;padding:24px 20px}
@@ -387,38 +247,6 @@ input,select{font-family:inherit;font-size:1rem;color:inherit}
 
 <div class="layout">
   <main class="main">
-
-    <!-- ============================================================ -->
-    <!-- HOLIDAY COACHING BANNER                                      -->
-    <!-- ============================================================ -->
-    <div class="holiday-banner" role="region" aria-label="Holiday coaching announcement">
-      <div class="hb-icon">
-        <i class="fa-solid fa-graduation-cap"></i>
-      </div>
-      <div class="hb-text">
-        <h3>
-          <i class="fa-solid fa-sun" style="color:var(--yellow)"></i>
-          Holiday Coaching
-          <span class="hb-badge">Enrolling Now</span>
-        </h3>
-        <p>
-          Keep learning and stay ahead this holiday. We offer engaging, curriculum‑aligned
-          coaching for all primary and secondary levels. Limited slots available.
-        </p>
-      </div>
-      <div class="hb-action">
-        <a href="tel:0742228675" class="btn-holiday" aria-label="Call 0742 228675 to book holiday coaching">
-          <i class="fa-solid fa-phone"></i>
-          <span>
-            Call 0742 228675
-            <small>Tap to book or enquire</small>
-          </span>
-        </a>
-      </div>
-    </div>
-    <!-- ============================================================ -->
-    <!-- END HOLIDAY COACHING BANNER                                  -->
-    <!-- ============================================================ -->
 
     <!-- page head -->
     <div class="page-head">
@@ -1059,4 +887,4 @@ function showHold(reason) {
 </script>
 
 </body>
-</html>
+  </html>
