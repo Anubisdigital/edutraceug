@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en-UG">
 <head>
 <meta charset="UTF-8">
@@ -304,6 +304,23 @@ table.tbl td.actions{text-align:right;white-space:nowrap}
   .wz-leaders-row{grid-template-columns:1fr 1fr auto}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* roster lists */
+.rs-group{border:1px solid var(--border);background:#fff;margin-bottom:12px}
+.rs-group>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:14px 16px;font-weight:800;font-size:1rem}
+.rs-group>summary::-webkit-details-marker{display:none}
+.rs-group>summary::before{content:"\25B8";color:var(--muted);transition:transform .15s}
+.rs-group[open]>summary::before{transform:rotate(90deg)}
+.rs-group[open]>summary{border-bottom:1px solid var(--border)}
+.rs-title{flex:1}
+.rs-in{width:100%;min-width:110px;padding:7px 8px;border:2px solid var(--border);background:#fff;font-size:.85rem;font-weight:500;font-family:inherit}
+.rs-in:focus{outline:none;border-color:var(--primary)}
+.rs-tbl td{padding:6px 6px}
+.rs-tbl tr.dirty .rs-in{border-color:var(--yellow);background:#FFFDF5}
+.rs-tbl tr.is-new .rs-in{border-color:var(--green);background:#f0fdf4}
+.rs-tbl tr.bad .rs-in.req-miss{border-color:var(--red)}
+.rs-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--border)}
+.rs-dirty{flex:1;font-size:.8rem;font-weight:600;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -555,6 +572,15 @@ table.tbl td.actions{text-align:right;white-space:nowrap}
         <button class="btn btn-outline" id="rsClearBtn" type="button" disabled>Clear</button>
       </div>
       <div id="rsResult" style="margin-top:16px"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div class="card-head">
+      <h2><i class="fa-solid fa-table-list"></i> Student rosters</h2>
+      <button class="btn btn-outline btn-sm" id="rsListRefresh" type="button"><i class="fa-solid fa-rotate"></i> Refresh</button>
+    </div>
+    <div class="card-body">
+      <div id="rsLists"></div>
     </div>
   </div>
 </section>
@@ -1123,6 +1149,13 @@ const WZ = {
   term: {}
 };
 
+// Roster list state
+const RS = {
+  rows: [],          // loaded student rows
+  original: new Map(), // id -> row snapshot (for dirty tracking)
+  classes: []        // available classes
+};
+
 const $ = (id) => document.getElementById(id);
 const q = (sel, root = document) => root.querySelector(sel);
 const qa = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -1289,23 +1322,21 @@ async function loadInitial() {
   const cur = S.terms.find((t) => t.isCurrent);
   S.currentTermId = cur ? cur.id : (S.terms[0] && S.terms[0].id) || null;
 
-  
-  
-// Merge streams (and student counts) into CLASSES constant
-const routeMap = {};
-const countMap = {};
-(S.structure.classes || []).forEach((c) => {
-  const canon = normaliseClass(c.class);
-  if (!canon) return;
-  routeMap[canon] = (routeMap[canon] || []).concat(c.streams || []);
-  if (typeof c.students === "number") countMap[canon] = (countMap[canon] || 0) + c.students;
-});
-S.structure.classes = CLASSES.map((c) => ({
-  class: c,
-  streams: [...new Set(routeMap[c] || [])],
-  students: countMap[c] || 0,
-  subjects: [] // subjects are now from constants, not from roster
-}));
+  // Merge streams (and student counts) into CLASSES constant
+  const routeMap = {};
+  const countMap = {};
+  (S.structure.classes || []).forEach((c) => {
+    const canon = normaliseClass(c.class);
+    if (!canon) return;
+    routeMap[canon] = (routeMap[canon] || []).concat(c.streams || []);
+    if (typeof c.students === "number") countMap[canon] = (countMap[canon] || 0) + c.students;
+  });
+  S.structure.classes = CLASSES.map((c) => ({
+    class: c,
+    streams: [...new Set(routeMap[c] || [])],
+    students: countMap[c] || 0,
+    subjects: []
+  }));
 }
 
 function paintHeader() {
@@ -1391,17 +1422,14 @@ function lsKey(key) {
 }
 
 function initWizard() {
-  // Populate class dropdowns
   const classOptions = CLASSES.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
   $("wzStudentClass").innerHTML = `<option value="">Select class</option>` + classOptions;
   $("wzAssignClass").innerHTML = `<option value="">Select class</option>` + classOptions;
 
-  // Electives grids
   renderElectivesGrid("wzElectivesS1S2", "S1-S2");
   renderElectivesGrid("wzElectivesS3S4", "S3-S4");
   renderElectivesGrid("wzElectivesS5S6", "S5-S6");
 
-  // Restore flags
   try {
     WZ.opened = localStorage.getItem(lsKey("opened")) === "true";
     WZ.step4Done = localStorage.getItem(lsKey("step4")) === "true";
@@ -1409,12 +1437,10 @@ function initWizard() {
     if (savedElectives) WZ.electives = JSON.parse(savedElectives);
   } catch {}
 
-  // Wire buttons
   $("wizardClose").onclick = closeWizard;
   $("wizardBack").onclick = () => goWizardStep(WZ.step - 1);
   $("wizardNext").onclick = onWizardNext;
 
-  // Step 1 logo
   setupDrop("wzLogoDrop", "wzLogoInput", async (file) => {
     if (file.size > 5 * 1024 * 1024) { toast("Logo too large (max 5 MB)", "error"); return; }
     const fd = new FormData(); fd.append("file", file);
@@ -1432,7 +1458,6 @@ function initWizard() {
     } catch (err) { toast(err.message, "error", 6000); }
   });
 
-  // Step 2 student upload
   let studentFile = null;
   setupDrop("wzStudentDrop", "wzStudentInput", (file) => {
     const ok = /\.(xlsx|xls|xlsm|csv)$/i.test(file.name);
@@ -1493,7 +1518,6 @@ function initWizard() {
   };
   $("wzStudentSkip").onclick = () => goWizardStep(3);
 
-  // Step 3 teacher upload
   let teacherFile = null;
   setupDrop("wzTeacherDrop", "wzTeacherInput", (file) => {
     const ok = /\.(xlsx|xls|xlsm|csv)$/i.test(file.name);
@@ -1549,9 +1573,6 @@ function initWizard() {
   };
   $("wzTeacherSkip").onclick = () => goWizardStep(4);
 
-  // Step 4 electives checkboxes handled by renderElectivesGrid
-
-  // Step 5 term save
   $("wzTermSave").onclick = async () => {
     const name = $("wzTermName").value.trim();
     if (!name) { toast("Term name required", "warn"); return; }
@@ -1577,11 +1598,9 @@ function initWizard() {
     finally { setBtn(btn, false); }
   };
 
-  // Step 6 assign class change
   $("wzAssignClass").onchange = renderAssignListForClass;
   $("wzAssignSave").onclick = saveAssignments;
 
-  // Step 7 school page
   setupDrop("wzHeroDrop", "wzHeroInput", async (file) => {
     if (file.size > 10 * 1024 * 1024) { toast("Hero image too large (max 10 MB)", "error"); return; }
     const fd = new FormData(); fd.append("file", file);
@@ -1604,7 +1623,6 @@ function initWizard() {
   };
   $("wzPageSave").onclick = saveWzPage;
 
-  // Restore current step display
   goWizardStep(WZ.step, true);
 }
 
@@ -1649,7 +1667,6 @@ function goWizardStep(step, silent) {
     ? `<span class="btn-label">Finish</span> <i class="fa-solid fa-check"></i>`
     : `Next <i class="fa-solid fa-arrow-right"></i>`;
 
-  // Step-specific render
   if (step === 1) renderWzStep1();
   if (step === 2) renderWzStep2();
   if (step === 3) renderWzStep3();
@@ -1660,7 +1677,6 @@ function goWizardStep(step, silent) {
   if (step === 8) renderWzStep8();
 
   if (!silent) {
-    // Scroll body to top
     $("wizardBody").scrollTop = 0;
   }
 }
@@ -1668,20 +1684,15 @@ function goWizardStep(step, silent) {
 function renderWzStep1() {
   const s = S.school || {};
   $("wzName").value = s.name || "";
-const unesc = (v) => v.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
-const secText = (t) => { const x = (s.sections || []).find((z) => z.title === t); return x ? unesc((x.blocks || []).map((b) => (b.runs || []).map((r) => r.text || "").join("")).join("\n")) : ""; };
+  const unesc = (v) => v.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+  const secText = (t) => { const x = (s.sections || []).find((z) => z.title === t); return x ? unesc((x.blocks || []).map((b) => (b.runs || []).map((r) => r.text || "").join("")).join("\n")) : ""; };
   $("wzMotto").value = secText("Motto");
   $("wzVision").value = secText("Vision");
   if (s.logoUrl) $("wzLogoPreview").src = s.logoUrl;
 }
 
-function renderWzStep2() {
-  // Nothing much to prefill
-}
-
-function renderWzStep3() {
-  // Nothing much to prefill
-}
+function renderWzStep2() {}
+function renderWzStep3() {}
 
 function renderWzStep4() {
   renderElectivesGrid("wzElectivesS1S2", "S1-S2");
@@ -1703,7 +1714,6 @@ function renderWzStep5() {
 }
 
 function renderWzStep6() {
-  // If a class is already selected, render its subjects
   renderAssignListForClass();
 }
 
@@ -1802,7 +1812,6 @@ function renderAssignListForClass() {
     el.innerHTML = `<p style="color:var(--muted);font-size:.86rem">No subjects found for this class.</p>`;
     return;
   }
-  // Load existing assignments for this class from teachers
   const existing = {};
   teachers.forEach((t) => {
     (t.assignments || []).forEach((a) => {
@@ -1826,19 +1835,15 @@ function renderAssignListForClass() {
   });
 }
 
-
 async function saveAssignments() {
   const cls = $("wzAssignClass").value;
   if (!cls) { toast("Pick a class first", "warn"); return; }
   const btn = $("wzAssignSave"); setBtn(btn, true);
   try {
     const assignMap = WZ.assign[cls] || {};
-
-    // Streams for this class. Empty array = single-stream school.
     const streams = ((S.structure.classes || []).find((c) => c.class === cls) || {}).streams || [];
     const streamList = streams.length ? streams : [""];
 
-    // Group by teacher: for each selected subject, expand across streams.
     const byTeacher = {};
     Object.entries(assignMap).forEach(([subject, uid]) => {
       if (!uid) return;
@@ -1849,12 +1854,10 @@ async function saveAssignments() {
     });
 
     for (const t of S.teachers) {
-      // Remove any existing rows for this class, keep the rest
       const existing = (t.assignments || []).filter((a) => normaliseClass(a.class) !== cls);
       const newOnes = byTeacher[t.uid] || [];
       const merged = [...existing, ...newOnes];
 
-      // Stable compare: sort by class|stream|subject before stringify
       const key = (a) => `${a.class}|${a.stream || ""}|${a.subject}`;
       const a = merged.slice().sort((x, y) => key(x).localeCompare(key(y)));
       const b = (t.assignments || []).slice().sort((x, y) => key(x).localeCompare(key(y)));
@@ -1873,23 +1876,18 @@ async function saveAssignments() {
   } catch (err) { toast(err.message, "error", 6000); }
   finally { setBtn(btn, false); }
 }
+
 function computeWizardStatus() {
   const school = S.school || {};
   const hasName = !!(school.name && school.name.trim());
 
-// Prefer an explicit student count if the teachers worker returned it.
-// Fall back to inferring from streams for older deployments.
-let hasStudents = false;
-if (S.structure && Array.isArray(S.structure.classes)) {
-  const total = S.structure.classes.reduce((n, c) => n + (typeof c.students === "number" ? c.students : 0), 0);
-  if (total > 0) hasStudents = true;
-  else hasStudents = S.structure.classes.some((c) => c.streams && c.streams.length);
-}
-  // Better: check if any students exist — use structure class subject-less trick? We have no student count directly.
-  // We'll infer from structure having any stream. If no streams, maybe no students. We could also check via teachers worker.
-  // Let's use the presence of any class with streams OR the school having been loaded with classes.
-  // For robustness, we'll consider step2 done if any class in structure has at least one stream.
- const hasTeachers = (S.teachers || []).length > 0;
+  let hasStudents = false;
+  if (S.structure && Array.isArray(S.structure.classes)) {
+    const total = S.structure.classes.reduce((n, c) => n + (typeof c.students === "number" ? c.students : 0), 0);
+    if (total > 0) hasStudents = true;
+    else hasStudents = S.structure.classes.some((c) => c.streams && c.streams.length);
+  }
+  const hasTeachers = (S.teachers || []).length > 0;
   const hasTerm = (S.terms || []).some((t) => t.isCurrent) || (S.terms || []).length > 0;
   const hasAssignments = (S.teachers || []).some((t) => (t.assignments || []).length > 0);
   const hasPage = !!((school.heroImages && school.heroImages.length) || (school.headTeacher && school.headTeacher.trim()));
@@ -1945,7 +1943,6 @@ function renderWzStep8() {
 function onWizardNext() {
   if (WZ.step === 8) { closeWizard(); return; }
   if (WZ.step === 4) {
-    // Persist step 4 done
     WZ.step4Done = true;
     try {
       localStorage.setItem(lsKey("step4"), "true");
@@ -1953,7 +1950,6 @@ function onWizardNext() {
     } catch {}
   }
   if (WZ.step === 1) {
-    // Save school name/motto/vision quickly
     saveWzStep1().then(() => goWizardStep(2)).catch(() => goWizardStep(2));
     return;
   }
@@ -1962,7 +1958,7 @@ function onWizardNext() {
 
 async function saveWzStep1() {
   const name = $("wzName").value.trim();
-  if (!name) return; // let them skip if blank
+  if (!name) return;
   const hdr = { "Content-Type": "application/json" };
   const base = `${W.profile}/school/id/${encodeURIComponent(S.schoolId)}`;
   const updated = await api(base, { method: "PATCH", headers: hdr, body: JSON.stringify({ name }) });
@@ -1980,7 +1976,6 @@ async function saveWzStep1() {
 
 function closeWizard() {
   $("wizardOverlay").classList.remove("show");
-  // Save current step
   try { localStorage.setItem(lsKey("step"), String(WZ.step)); } catch {}
   renderDashboard();
 }
@@ -1995,7 +1990,6 @@ function maybeAutoOpenWizard() {
   try { opened = localStorage.getItem(lsKey("opened")) === "true"; } catch {}
   if (opened) return;
   try { localStorage.setItem(lsKey("opened"), "true"); } catch {}
-  // Only auto-open if required steps missing
   const status = computeWizardStatus();
   if (!status.allRequiredDone) {
     openWizard(1);
@@ -2012,7 +2006,6 @@ async function renderDashboard() {
     <div class="stat"><div class="skel h20"></div><div class="skel h40"></div></div>
     <div class="stat"><div class="skel h20"></div><div class="skel h40"></div></div>`;
 
-  // Wizard banner
   const status = computeWizardStatus();
   const banner = $("wzDashBanner");
   if (!status.allRequiredDone) {
@@ -2356,7 +2349,6 @@ function openEditSection(id) {
 }
 
 function renderRoster() {
-  // Populate class dropdown with CLASSES
   $("rsClass").innerHTML = `<option value="">Select class</option>` + CLASSES.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
   let selectedFile = null;
   const fileInfo = $("rsFileInfo");
@@ -2459,12 +2451,201 @@ function renderRoster() {
       toast("Roster uploaded", "success");
       await loadInitial();
       paintHeader();
+      await loadRosterLists();
     } catch (err) {
       result.innerHTML = `<div class="card" style="border-left:4px solid var(--red)"><div class="card-body"><div style="font-weight:800;color:var(--red)"><i class="fa-solid fa-circle-xmark"></i> Upload failed</div><p style="font-size:.88rem;margin-top:6px">${esc(err.message)}</p></div></div>`;
     } finally {
       setBtn(uploadBtn, false);
     }
   };
+
+  $("rsListRefresh").onclick = () => loadRosterLists();
+  loadRosterLists();
+}
+
+async function loadRosterLists() {
+  const el = $("rsLists");
+  el.innerHTML = `<div class="skel h20 w50"></div><div class="skel h80"></div>`;
+  try {
+    const token = await idToken();
+    const res = await fetch(`${W.roster}/roster/list`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ schoolId: S.schoolId })
+    });
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Failed to load roster");
+    const data = await res.json();
+    RS.rows = data.rows || [];
+    RS.original.clear();
+    RS.rows.forEach((r) => RS.original.set(r.id, { ...r }));
+    renderRosterGroups();
+  } catch (err) {
+    el.innerHTML = `<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i><h3>Couldn't load roster</h3><p>${esc(err.message)}</p></div>`;
+  }
+}
+
+function renderRosterGroups() {
+  const el = $("rsLists");
+  if (!RS.rows.length) {
+    el.innerHTML = `<div class="empty"><i class="fa-solid fa-users-slash"></i><h3>No students yet</h3><p>Upload a student roster to get started.</p></div>`;
+    return;
+  }
+
+  const byClass = {};
+  RS.rows.forEach((r) => {
+    const c = r.class || "Unknown";
+    if (!byClass[c]) byClass[c] = [];
+    byClass[c].push(r);
+  });
+
+  const classOrder = CLASSES.filter((c) => byClass[c]).concat(Object.keys(byClass).filter((c) => !CLASSES.includes(c)));
+
+  el.innerHTML = classOrder.map((cls) => {
+    const students = byClass[cls].sort((a, b) => (a.lastName + a.firstName).localeCompare(b.lastName + b.firstName));
+    const streamSet = [...new Set(students.map((s) => s.stream).filter(Boolean))];
+    return `
+      <details class="rs-group" data-class="${esc(cls)}">
+        <summary>
+          <span class="rs-title">${esc(cls)}</span>
+          ${streamSet.length ? streamSet.map((s) => `<span class="pill blue">${esc(s)}</span>`).join("") : ""}
+          <span class="pill grey">${students.length}</span>
+        </summary>
+        <div class="table-wrap">
+          <table class="tbl rs-tbl">
+            <thead><tr>
+              <th>Student ID</th><th>First name</th><th>Last name</th>
+              <th>Class</th><th>Stream</th><th>Gender</th><th>Subjects</th><th>Extra</th><th></th>
+            </tr></thead>
+            <tbody>
+              ${students.map((r) => rosterRowHtml(r)).join("")}
+            </tbody>
+          </table>
+        </div>
+        <div class="rs-foot">
+          <span class="rs-dirty" data-dirty>No unsaved changes</span>
+          <button class="btn btn-outline btn-sm" data-revert type="button">Revert all</button>
+          <button class="btn btn-green btn-sm" data-save type="button"><span class="spinner"></span><span class="btn-label">Save changes</span></button>
+        </div>
+      </details>
+    `;
+  }).join("");
+
+  // Wire up editable inputs and action buttons
+  qa(".rs-group").forEach((group) => {
+    const cls = group.dataset.class;
+    const saveBtn = q("[data-save]", group);
+    const revertBtn = q("[data-revert]", group);
+    const dirtyLabel = q("[data-dirty]", group);
+    const inputs = qa(".rs-in", group);
+
+    const updateDirty = () => {
+      let n = 0;
+      inputs.forEach((inp) => {
+        const tr = inp.closest("tr");
+        const id = tr.dataset.id;
+        const field = inp.dataset.field;
+        const orig = RS.original.get(id);
+        if (!orig) return;
+        const dirty = String(inp.value || "") !== String(orig[field] || "");
+        tr.classList.toggle("dirty", dirty);
+        if (dirty) n++;
+      });
+      dirtyLabel.textContent = n ? `${n} unsaved change${n > 1 ? "s" : ""}` : "No unsaved changes";
+      saveBtn.disabled = n === 0;
+      revertBtn.disabled = n === 0;
+    };
+
+    inputs.forEach((inp) => inp.addEventListener("input", updateDirty));
+    updateDirty();
+
+    saveBtn.onclick = async () => {
+      const token = await idToken();
+      const byId = {};
+      inputs.forEach((inp) => {
+        const tr = inp.closest("tr");
+        const id = tr.dataset.id;
+        if (!byId[id]) byId[id] = { id, fields: {} };
+        byId[id].fields[inp.dataset.field] = inp.value;
+      });
+
+      setBtn(saveBtn, true);
+      try {
+        for (const { id, fields } of Object.values(byId)) {
+          const orig = RS.original.get(id);
+          if (!orig) continue;
+          const dirty = Object.entries(fields).some(([k, v]) => String(v || "") !== String(orig[k] || ""));
+          if (!dirty) continue;
+          const res = await fetch(`${W.roster}/roster/update`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ schoolId: S.schoolId, id, fields })
+          });
+          if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Update failed");
+        }
+        toast("Roster saved", "success");
+        await loadRosterLists();
+      } catch (err) {
+        toast(err.message, "error", 6000);
+      } finally {
+        setBtn(saveBtn, false);
+      }
+    };
+
+    revertBtn.onclick = () => {
+      inputs.forEach((inp) => {
+        const tr = inp.closest("tr");
+        const id = tr.dataset.id;
+        const orig = RS.original.get(id);
+        if (orig) inp.value = orig[inp.dataset.field] || "";
+      });
+      updateDirty();
+    };
+  });
+
+  // Delete buttons
+  qa("[data-del-student]").forEach((b) => {
+    b.onclick = async () => {
+      const id = b.dataset.delStudent;
+      const row = RS.rows.find((r) => r.id === id);
+      if (!row) return;
+      const ok = await confirmDialog("Remove student", `Remove ${row.firstName} ${row.lastName} from the roster? This cannot be undone.`, "Remove");
+      if (!ok) return;
+      try {
+        const token = await idToken();
+        const res = await fetch(`${W.roster}/roster/delete`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ schoolId: S.schoolId, id })
+        });
+        if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Delete failed");
+        toast("Student removed", "success");
+        await loadRosterLists();
+      } catch (err) { toast(err.message, "error"); }
+    };
+  });
+}
+
+function rosterRowHtml(r) {
+  const subjectText = Array.isArray(r.subjects) ? r.subjects.join(", ") : "";
+  return `
+    <tr data-id="${esc(r.id)}">
+      <td><input class="rs-in" data-field="studentId" value="${esc(r.studentId || "")}" maxlength="40"></td>
+      <td><input class="rs-in" data-field="firstName" value="${esc(r.firstName || "")}" maxlength="80"></td>
+      <td><input class="rs-in" data-field="lastName" value="${esc(r.lastName || "")}" maxlength="80"></td>
+      <td><input class="rs-in" data-field="class" value="${esc(r.class || "")}" maxlength="30"></td>
+      <td><input class="rs-in" data-field="stream" value="${esc(r.stream || "")}" maxlength="30"></td>
+      <td>
+        <select class="rs-in" data-field="gender">
+          <option value="" ${!r.gender ? "selected" : ""}>—</option>
+          <option value="Male" ${r.gender === "Male" ? "selected" : ""}>Male</option>
+          <option value="Female" ${r.gender === "Female" ? "selected" : ""}>Female</option>
+        </select>
+      </td>
+      <td><input class="rs-in" data-field="subjectsText" value="${esc(subjectText)}" maxlength="500" placeholder="comma separated"></td>
+      <td><input class="rs-in" data-field="extraDetail" value="${esc(r.extraDetail || "")}" maxlength="200"></td>
+      <td class="actions"><button class="btn btn-red btn-sm" data-del-student="${esc(r.id)}" type="button"><i class="fa-solid fa-trash"></i></button></td>
+    </tr>
+  `;
 }
 
 async function renderTeachers() {
@@ -2674,7 +2855,6 @@ async function renderStructure() {
   c.innerHTML = `<div class="skel h20 w50"></div><div class="skel h80"></div><div class="skel h80"></div>`;
   try {
     const data = await api(`${W.teachers}/schools/${encodeURIComponent(S.schoolId)}/structure`);
-    // Merge with CLASSES
     const routeMap = {};
     (data.classes || []).forEach((cl) => {
       const canon = normaliseClass(cl.class);
@@ -3564,4 +3744,4 @@ async function renderAudit() {
 </script>
 
 </body>
- </html>
+         </html>
